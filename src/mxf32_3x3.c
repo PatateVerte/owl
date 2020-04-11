@@ -1,4 +1,5 @@
 #include <OWL/mxf32_3x3.h>
+#include <OWL/mxf32_2x2.h>
 
 #include <math.h>
 
@@ -160,19 +161,27 @@ owl_mxf32_3x3* owl_mxf32_3x3_diagonalize_sym(owl_mxf32_3x3* D, owl_mxf32_3x3* P,
 {
     #define diag_nb_iter 25
 
-    float vp_list[3] = {0.0, 0.0, 0.0};
-
-    owl_mxf32_3x3 M;
-    owl_mxf32_3x3_copy(&M, A);
-
-    owl_mxf32_3x3 B;
-    owl_mxf32_3x3_diag(&B, 1.0);
-
-    owl_mxf32_3x3 VP_Base;
-    owl_mxf32_3x3_zero(&VP_Base);
-
-    for(int base_j = 0 ; base_j < 2 ; base_j++)
+    if(owl_mxf32_3x3_norm2(A) == 0.0)
     {
+        if(P != NULL)
+        {
+            owl_mxf32_3x3_diag(P, 1.0);
+        }
+
+        owl_mxf32_3x3_zero(D);
+    }
+    else
+    {
+        float vp_max;
+
+        owl_mxf32_3x3 M;
+        owl_mxf32_3x3_copy(&M, A);
+
+        owl_mxf32_3x3 B;
+        owl_mxf32_3x3_diag(&B, 1.0);
+
+        owl_v3f32 V0;
+
         for(int k = 0 ; k < diag_nb_iter ; k++)
         {
             owl_mxf32_3x3_mul(&M, &M, &M);
@@ -180,54 +189,82 @@ owl_mxf32_3x3* owl_mxf32_3x3_diagonalize_sym(owl_mxf32_3x3* D, owl_mxf32_3x3* P,
             owl_mxf32_3x3_scalar_mul(&M, &M, 1.0 / norm2_M);
         }
 
-        owl_mxf32_3x3 T;
-        owl_mxf32_3x3_mul(&T, &M, &B);
-
         int r = 0;
-        float vp_abs = 0.0;
+        float square_vp_max = 0.0;
         for(int j = 0 ; j < 3 ; j++)
         {
-            float tmp = owl_v3f32_norm( T.column[j] );
-            if(tmp >= vp_abs)
+            float tmp = owl_v3f32_dot(M.column[j], M.column[j]);
+            if(tmp >= square_vp_max)
             {
                 r = j;
-                vp_abs = tmp;
+                square_vp_max = tmp;
             }
         }
 
-        VP_Base.column[base_j] = owl_v3f32_normalize( T.column[r] );
-        vp_list[base_j] = owl_v3f32_dot(
-                                            VP_Base.column[base_j],
-                                            owl_mxf32_3x3_transform(A, VP_Base.column[base_j])
-                                          );
+        V0 = owl_v3f32_normalize(M.column[r]);
+        vp_max = owl_v3f32_dot(
+                                V0,
+                                owl_mxf32_3x3_transform(A, V0)
+                               );
 
-        if(base_j == 0)
+        owl_v3f32 B_sev[2];
         {
-            owl_mxf32_3x3_copy(&M, A);
-            for(int j = 0 ; j < 3 ; j++)
+            if( owl_v3f32_dot(B.column[0], V0) < owl_v3f32_dot(B.column[1], V0) )
             {
-                M.column[j] = owl_v3f32_sub(
-                                                M.column[j],
-                                                owl_v3f32_scalar_mul(
-                                                                        VP_Base.column[0],
-                                                                        vp_list[0] * owl_v3f32_dot(VP_Base.column[0], B.column[j])
-                                                                       )
-                                               );
+                B_sev[0] = owl_v3f32_cross(B.column[0], V0);
             }
+            else
+            {
+                B_sev[0] = owl_v3f32_cross(B.column[1], V0);
+            }
+
+            B_sev[0] = owl_v3f32_normalize(B_sev[0]);
+            B_sev[1] = owl_v3f32_cross(V0, B_sev[0]);
         }
-    }
 
-    vp_list[2] = owl_mxf32_3x3_det(A) / (vp_list[0] * vp_list[1]);
-    VP_Base.column[2] = owl_v3f32_cross(VP_Base.column[0], VP_Base.column[1]);
+        float flat_As[4] OWL_ALIGN16;
+        {
+            owl_v3f32 Im_Bs[2] =
+            {
+                owl_mxf32_3x3_transform(A, B_sev[0]),
+                owl_mxf32_3x3_transform(A, B_sev[1])
+            };
 
-    for(int j = 0 ; j < 3 ; j++)
-    {
-        D->column[j] = owl_v3f32_scalar_mul(B.column[j], vp_list[j]);
-    }
+            flat_As[0] = owl_v3f32_dot(Im_Bs[0], B_sev[0]);
+            flat_As[1] = owl_v3f32_dot(Im_Bs[0], B_sev[1]);
+            flat_As[2] = flat_As[1];
+            flat_As[3] = owl_v3f32_dot(Im_Bs[1], B_sev[1]);
+        }
 
-    if(P != NULL)
-    {
-        owl_mxf32_3x3_copy(P, &VP_Base);
+        owl_mxf32_2x2 As;
+        owl_mxf32_2x2_load(&As, flat_As);
+
+        owl_mxf32_2x2 Ps;
+        owl_mxf32_2x2 Ds;
+        owl_mxf32_2x2_diagonalize_sym(&Ds, &Ps, &As);
+
+        float flat_Ds[4] OWL_ALIGN16;
+        owl_mxf32_2x2_store(flat_Ds, &Ds);
+
+        D->column[0] = owl_v3f32_scalar_mul(B.column[0], vp_max);
+        D->column[1] = owl_v3f32_scalar_mul(B.column[1], flat_Ds[0]);
+        D->column[2] = owl_v3f32_scalar_mul(B.column[2], flat_Ds[3]);
+
+        if(P != NULL)
+        {
+            float flat_Ps[4] OWL_ALIGN16;
+            owl_mxf32_2x2_store(flat_Ps, &Ps);
+
+            P->column[0] = V0;
+            P->column[1] = owl_v3f32_add_scalar_mul(
+                                                        owl_v3f32_scalar_mul(B_sev[0], flat_Ps[0]),
+                                                        B_sev[1], flat_Ps[1]
+                                                    );
+            P->column[2] = owl_v3f32_add_scalar_mul(
+                                                        owl_v3f32_scalar_mul(B_sev[0], flat_Ps[2]),
+                                                        B_sev[1], flat_Ps[3]
+                                                    );
+        }
     }
 
     return D;

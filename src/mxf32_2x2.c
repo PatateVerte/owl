@@ -54,10 +54,14 @@ owl_mxf32_2x2* owl_mxf32_2x2_Inv(owl_mxf32_2x2* M, owl_mxf32_2x2 const* A)
 //Return D
 owl_mxf32_2x2* owl_mxf32_2x2_diagonalize_sym(owl_mxf32_2x2* D, owl_mxf32_2x2* P, owl_mxf32_2x2 const* A)
 {
-    if(owl_mxf32_2x2_norminf(A) == 0.0)
+    if(owl_mxf32_2x2_norm2(A) == 0.0)
     {
+        if(P != NULL)
+        {
+            owl_mxf32_2x2_diag(P, 1.0);
+        }
+
         owl_mxf32_2x2_zero(D);
-        owl_mxf32_2x2_diag(P, 1.0);
     }
     else
     {
@@ -116,14 +120,20 @@ owl_mxf32_2x2* owl_mxf32_2x2_diagonalize_sym(owl_mxf32_2x2* D, owl_mxf32_2x2* P,
         y *= inv_norm;
 
         float flat_P[4] OWL_ALIGN16;
+        owl_mxf32_2x2 P_;
         flat_P[0] = x;
         flat_P[1] = y;
         flat_P[2] = -y;
         flat_P[3] = x;
-        owl_mxf32_2x2_load(P, flat_P);
+        owl_mxf32_2x2_load(&P_, flat_P);
 
         owl_mxf32_2x2 M;
-        owl_mxf32_2x2_mul(&M, A, P);
+        owl_mxf32_2x2_mul(&M, A, &P_);
+
+        if(P != NULL)
+        {
+            *P = P_;
+        }
 
         *D = _mm_or_ps(
                         _mm_set_ss(vp_max),
