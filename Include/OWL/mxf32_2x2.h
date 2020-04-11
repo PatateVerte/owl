@@ -28,6 +28,20 @@ static inline owl_mxf32_2x2* owl_mxf32_2x2_diag(owl_mxf32_2x2* M, float diag_val
 }
 
 //
+static inline float* owl_mxf32_2x2_store(float* dst, owl_mxf32_2x2 const* M)
+{
+    _mm_storeu_ps(dst, *M);
+    return dst;
+}
+
+//
+static inline owl_mxf32_2x2* owl_mxf32_2x2_load(owl_mxf32_2x2* M, float const* src)
+{
+    *M = _mm_loadu_ps(src);
+    return M;
+}
+
+//
 float owl_mxf32_2x2_get_element(owl_mxf32_2x2* M, int i, int j);
 
 //

@@ -1,5 +1,9 @@
 #include <OWL/mxf32_2x2.h>
 
+#include <OWL/owl.h>
+
+#include <math.h>
+
 //
 //
 //
@@ -57,15 +61,74 @@ owl_mxf32_2x2* owl_mxf32_2x2_diagonalize_sym(owl_mxf32_2x2* D, owl_mxf32_2x2* P,
     }
     else
     {
-        float vp_list[4] OWL_ALIGN16;
+        float vp_max;
         {
             float flat_A[4] OWL_ALIGN16;
-            _mm_store_ps(flat_A, A);
+            owl_mxf32_2x2_store(flat_A, A);
 
-            float delta = (flat_A[0] - flat_A[3]) * (flat_A[0] - flat_A[3]) + 4 * flat_A[1] * flat_A[1];
-            vp_list[0] = 0.5f * (flat_A[0] + flat_A[3]) + sqrtf(delta);
-            vp_list[1] = 0.5f * (flat_A[0] + flat_A[3]) - sqrtf(delta);
+            float const delta = (flat_A[0] - flat_A[3]) * (flat_A[0] - flat_A[3]) + 4 * flat_A[1] * flat_A[1];
+
+            if(flat_A[0] + flat_A[3] >= 0.0)
+            {
+                vp_max = 0.5 * ((flat_A[0] + flat_A[3]) + sqrtf(delta));
+            }
+            else
+            {
+                vp_max = 0.5 * ((flat_A[0] + flat_A[3]) - sqrtf(delta));
+            }
         }
+
+        owl_mxf32_2x2 H;
+        owl_mxf32_2x2_diag(&H, vp_max);
+        owl_mxf32_2x2_sub(&H, A, &H);
+
+        float a, b;
+
+        float n1 = _mm_cvtss_f32(_mm_dp_ps(H, H, 0b01010001));
+        float n2 = _mm_cvtss_f32(_mm_dp_ps(H, H, 0b10100001));
+        float flat_H[4] OWL_ALIGN16;
+        owl_mxf32_2x2_store(flat_H, &H);
+        if(n1 >= n2)
+        {
+            a = flat_H[0];
+            b = flat_H[2];
+        }
+        else
+        {
+            a = flat_H[1];
+            b = flat_H[3];
+        }
+
+        float x, y;
+        if(fabsf(a) < fabsf(b))
+        {
+            x = 1.0;
+            y = - a / b;
+        }
+        else
+        {
+            y = 1.0;
+            x = - b / a;
+        }
+
+        float inv_norm = 1.0 / sqrtf(x*x + y*y);
+        x *= inv_norm;
+        y *= inv_norm;
+
+        float flat_P[4] OWL_ALIGN16;
+        flat_P[0] = x;
+        flat_P[1] = y;
+        flat_P[2] = -y;
+        flat_P[3] = x;
+        owl_mxf32_2x2_load(P, flat_P);
+
+        owl_mxf32_2x2 M;
+        owl_mxf32_2x2_mul(&M, A, P);
+
+        *D = _mm_or_ps(
+                        _mm_set_ss(vp_max),
+                        _mm_dp_ps(M, *P, 0b11001000)
+                       );
     }
 
     return D;
