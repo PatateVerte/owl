@@ -80,12 +80,15 @@ static inline float owl_mxf32_3x3_norm2(owl_mxf32_3x3 const* A)
     return sqrtf(square_norm);
 }
 
+//norminf(A)
+float owl_mxf32_3x3_norminf(owl_mxf32_3x3 const* A);
+
 //Tr(A)
 static inline float owl_mxf32_3x3_Trace(owl_mxf32_3x3 const* A)
 {
-    return owl_v3f32_get_component(A->column[0], 0) +
-            owl_v3f32_get_component(A->column[1], 1) +
-            owl_v3f32_get_component(A->column[2], 2);
+    return owl_v3f32_unsafe_get_component(A->column[0], 0) +
+            owl_v3f32_unsafe_get_component(A->column[1], 1) +
+            owl_v3f32_unsafe_get_component(A->column[2], 2);
 }
 
 //det(A)

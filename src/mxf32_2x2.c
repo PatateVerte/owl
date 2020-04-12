@@ -54,14 +54,17 @@ owl_mxf32_2x2* owl_mxf32_2x2_Inv(owl_mxf32_2x2* M, owl_mxf32_2x2 const* A)
 //Return D
 owl_mxf32_2x2* owl_mxf32_2x2_diagonalize_sym(owl_mxf32_2x2* D, owl_mxf32_2x2* P, owl_mxf32_2x2 const* A)
 {
-    if(owl_mxf32_2x2_norm2(A) == 0.0)
+    //Detection of diagonal matrix
+    float const non_diag_term = _mm_cvtss_f32( _mm_insert_ps(*A, *A, 0b01001110) );
+
+    if(non_diag_term == 0.0)
     {
         if(P != NULL)
         {
             owl_mxf32_2x2_diag(P, 1.0);
         }
 
-        owl_mxf32_2x2_zero(D);
+        *D = _mm_insert_ps(*A, *A, 0b00000110);
     }
     else
     {

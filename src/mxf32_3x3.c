@@ -110,11 +110,7 @@ owl_v3f32 owl_mxf32_3x3_transform(owl_mxf32_3x3 const* A, owl_v3f32 v)
     for(int j = 2 ; j >= 0 ; j--)
     {
         v_ = owl_v3f32_rotate_comp(v_);
-        vr = owl_v3f32_add(
-                                vr,
-                                owl_v3f32_scalar_mul(A->column[j], owl_v3f32_get_component(v_, 0))
-                            );
-
+        vr = owl_v3f32_add_scalar_mul(vr, A->column[j], owl_v3f32_unsafe_get_component(v_, 0));
     }
 
     return vr;
@@ -135,6 +131,21 @@ owl_mxf32_3x3* owl_mxf32_3x3_mul(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A, owl_m
     owl_mxf32_3x3_copy(M, &S);
 
     return M;
+}
+
+//norminf(A)
+//
+//
+float owl_mxf32_3x3_norminf(owl_mxf32_3x3 const* A)
+{
+    float norminf = 0.0;
+
+    for(int j = 0 ; j < 3 ; j++)
+    {
+        norminf = fmaxf(norminf, owl_v3f32_norminf(A->column[j]));
+    }
+
+    return norminf;
 }
 
 //M = A ^(-1)
@@ -172,15 +183,11 @@ owl_mxf32_3x3* owl_mxf32_3x3_diagonalize_sym(owl_mxf32_3x3* D, owl_mxf32_3x3* P,
     }
     else
     {
-        float vp_max;
-
         owl_mxf32_3x3 M;
         owl_mxf32_3x3_copy(&M, A);
 
         owl_mxf32_3x3 B;
         owl_mxf32_3x3_diag(&B, 1.0);
-
-        owl_v3f32 V0;
 
         for(int k = 0 ; k < diag_nb_iter ; k++)
         {
@@ -189,27 +196,49 @@ owl_mxf32_3x3* owl_mxf32_3x3_diagonalize_sym(owl_mxf32_3x3* D, owl_mxf32_3x3* P,
             owl_mxf32_3x3_scalar_mul(&M, &M, 1.0 / norm2_M);
         }
 
-        int r = 0;
-        float square_vp_max = 0.0;
-        for(int j = 0 ; j < 3 ; j++)
+        //Computes eigenvector
+        owl_v3f32 V0 = owl_v3f32_zero();
         {
-            float tmp = owl_v3f32_dot(M.column[j], M.column[j]);
-            if(tmp >= square_vp_max)
+            float square_norm = 0.0;
+            for(int j = 0 ; j < 3 ; j++)
             {
-                r = j;
-                square_vp_max = tmp;
+                float tmp = owl_v3f32_dot(M.column[j], M.column[j]);
+                if(tmp >= square_norm)
+                {
+                    V0 = M.column[j];
+                    square_norm = tmp;
+                }
+            }
+
+            //Correction of V0 if vp_max and -vp_max are both eigenvalues
+            //
+            owl_v3f32 U0 = owl_mxf32_3x3_transform(A, V0);
+            U0 = owl_v3f32_scalar_mul(U0, sqrtf(square_norm / owl_v3f32_dot(U0, U0)));
+
+            owl_v3f32 V1 = owl_v3f32_add(V0, U0);
+            float square_n1 = owl_v3f32_dot(V1, V1);
+            owl_v3f32 V2 = owl_v3f32_sub(V0, U0);
+            float square_n2 = owl_v3f32_dot(V2, V2);
+
+            if(square_n1 >= square_n2)
+            {
+                V0 = owl_v3f32_scalar_div(V1, sqrtf(square_n1));
+            }
+            else
+            {
+                V0 = owl_v3f32_scalar_div(V2, sqrtf(square_n2));
             }
         }
 
-        V0 = owl_v3f32_normalize(M.column[r]);
-        vp_max = owl_v3f32_dot(
-                                V0,
-                                owl_mxf32_3x3_transform(A, V0)
-                               );
+        //
+        float vp_max = owl_v3f32_dot(
+                                        V0,
+                                        owl_mxf32_3x3_transform(A, V0)
+                                    );
 
         owl_v3f32 B_sev[2];
         {
-            if( owl_v3f32_dot(B.column[0], V0) < owl_v3f32_dot(B.column[1], V0) )
+            if( owl_v3f32_unsafe_get_component(V0, 0) < owl_v3f32_unsafe_get_component(V0, 1) )
             {
                 B_sev[0] = owl_v3f32_cross(B.column[0], V0);
             }

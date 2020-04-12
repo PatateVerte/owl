@@ -46,7 +46,7 @@ owl_q32 owl_q32_mul(owl_q32 q1, owl_q32 q2)
 owl_q32 owl_q32_rotation(owl_v3f32 v, float alpha)
 {
     float cos, sin;
-    sincosf(0.5f * alpha, &sin, &cos);
+    sincosf(0.5 * alpha, &sin, &cos);
 
     owl_v3f32 Im = owl_v3f32_scalar_mul(v, sin);
     Im = _mm_shuffle_ps(Im, Im, 0b10010011);
@@ -75,7 +75,7 @@ owl_v3f32 owl_q32_transform_v3f32(owl_q32 q, owl_v3f32 u)
     rot = owl_v3f32_add_scalar_mul(
                                         rot,
                                         u,
-                                        a*a - 0.5f
+                                        a*a - 0.5
                                      );
 
     return owl_v3f32_add(rot, rot);
