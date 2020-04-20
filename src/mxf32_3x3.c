@@ -172,14 +172,23 @@ owl_mxf32_3x3* owl_mxf32_3x3_diagonalize_sym(owl_mxf32_3x3* D, owl_mxf32_3x3* P,
 {
     #define diag_nb_iter 25
 
-    if(owl_mxf32_3x3_norm2(A) == 0.0)
+    float non_diag_term = 0.0;
     {
+        owl_mxf32_3x3 A_without_diag;
+        A_without_diag.column[0] = owl_v3f32_unsafe_set_component(A->column[0], 0, 0.0);
+        A_without_diag.column[0] = owl_v3f32_unsafe_set_component(A->column[1], 1, 0.0);
+        A_without_diag.column[0] = owl_v3f32_unsafe_set_component(A->column[2], 2, 0.0);
+        non_diag_term = owl_mxf32_3x3_norm2(&A_without_diag);
+    }
+
+    if(non_diag_term == 0.0)
+    {
+        owl_mxf32_3x3_copy(D, A);
+
         if(P != NULL)
         {
             owl_mxf32_3x3_diag(P, 1.0);
         }
-
-        owl_mxf32_3x3_zero(D);
     }
     else
     {
@@ -196,7 +205,7 @@ owl_mxf32_3x3* owl_mxf32_3x3_diagonalize_sym(owl_mxf32_3x3* D, owl_mxf32_3x3* P,
             owl_mxf32_3x3_scalar_mul(&M, &M, 1.0 / norm2_M);
         }
 
-        //Computes eigenvector
+        //Computes an eigenvector associated with vp_max
         owl_v3f32 V0 = owl_v3f32_zero();
         {
             float square_norm = 0.0;

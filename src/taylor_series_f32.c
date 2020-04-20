@@ -9,19 +9,19 @@
 owl_TaylorDevf32* owl_TaylorDevf32_Create(unsigned int max_order, owl_error* ret_error, owl_error const* pass_through_error)
 {
     owl_error error = OWL_SUCCESS;
-    owl_TaylorDevf32* dev = NULL;
+    owl_TaylorDevf32* D = NULL;
 
     OWL_PASS_THROUGH_ERROR_VERIFICATION(error, pass_through_error)
     {
-        dev = malloc(sizeof(*dev));
-        if(dev != NULL)
+        D = malloc(sizeof(*D));
+        if(D != NULL)
         {
-            dev->max_order = max_order;
-            dev->order = 0;
-            dev->x0 = NAN;
+            D->max_order = max_order;
+            D->order = 0;
+            D->x0 = NAN;
 
-            dev->terms = malloc(((size_t)max_order + 1) * sizeof(*dev->terms));
-            if(dev->terms == NULL)
+            D->terms = malloc(((size_t)max_order + 1) * sizeof(*D->terms));
+            if(D->terms == NULL)
             {
                 error = OWL_MEMORY_ERROR;
             }
@@ -34,8 +34,8 @@ owl_TaylorDevf32* owl_TaylorDevf32_Create(unsigned int max_order, owl_error* ret
 
     if(error != OWL_SUCCESS)
     {
-        owl_TaylorDevf32_Destroy(dev);
-        dev = NULL;
+        owl_TaylorDevf32_Destroy(D);
+        D = NULL;
     }
 
     if(ret_error != NULL)
@@ -43,19 +43,44 @@ owl_TaylorDevf32* owl_TaylorDevf32_Create(unsigned int max_order, owl_error* ret
         *ret_error = error;
     }
 
-    return dev;
+    return D;
 }
 
 //
 //
 //
-void owl_TaylorDevf32_Destroy(owl_TaylorDevf32* dev)
+void owl_TaylorDevf32_Destroy(owl_TaylorDevf32* D)
 {
-    if(dev != NULL)
+    if(D != NULL)
     {
-        free(dev->terms);
-        free(dev);
+        free(D->terms);
+        free(D);
     }
+}
+
+//D(x)
+//
+//
+float owl_TaylorDevf32_Evaluate(owl_TaylorDevf32 const* D, float x, owl_error* ret_error, owl_error const* pass_through_error)
+{
+    owl_error error = OWL_SUCCESS;
+
+    float Dx = 0.0;
+
+    OWL_PASS_THROUGH_ERROR_VERIFICATION(error, pass_through_error)
+    {
+        for(unsigned int i = 0 ; i <= D->order ; i++)
+        {
+            Dx = (x - D->x0) * Dx + D->terms[D->order - i];
+        }
+    }
+
+    if(ret_error != NULL)
+    {
+        *ret_error = error;
+    }
+
+    return Dx;
 }
 
 //Df = 0

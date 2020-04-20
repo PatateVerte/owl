@@ -59,12 +59,12 @@ owl_mxf32_2x2* owl_mxf32_2x2_diagonalize_sym(owl_mxf32_2x2* D, owl_mxf32_2x2* P,
 
     if(non_diag_term == 0.0)
     {
+        *D = _mm_insert_ps(*A, *A, 0b00000110);
+
         if(P != NULL)
         {
             owl_mxf32_2x2_diag(P, 1.0);
         }
-
-        *D = _mm_insert_ps(*A, *A, 0b00000110);
     }
     else
     {
@@ -133,15 +133,15 @@ owl_mxf32_2x2* owl_mxf32_2x2_diagonalize_sym(owl_mxf32_2x2* D, owl_mxf32_2x2* P,
         owl_mxf32_2x2 M;
         owl_mxf32_2x2_mul(&M, A, &P_);
 
-        if(P != NULL)
-        {
-            *P = P_;
-        }
-
         *D = _mm_or_ps(
                         _mm_set_ss(vp_max),
                         _mm_dp_ps(M, *P, 0b11001000)
                        );
+
+        if(P != NULL)
+        {
+            *P = P_;
+        }
     }
 
     return D;
