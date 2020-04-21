@@ -10,6 +10,15 @@
 #include <pmmintrin.h>
 #include <smmintrin.h>
 
+/*
+    V
+    E
+    C
+    T
+    O
+    R
+*/
+
 typedef __m128 owl_v3f32;
 
 //null vector
@@ -69,11 +78,11 @@ static inline owl_v3f32 owl_v3f32_sub(owl_v3f32 a, owl_v3f32 b)
 
 //
 #define owl_v3f32_unsafe_set_component(v, i, val) \
-    _mm_insert_ps( (v) , _mm_set_ss((val)) , (0b1000 | (0b00 << 6) | ((i) << 4)) )
+    ( _mm_insert_ps( (v) , _mm_set_ss((val)) , (0b1000 | (0b00 << 6) | ((i) << 4)) ) )
 
 
 #define owl_v3f32_unsafe_get_component(v, i) \
-    _mm_cvtss_f32( _mm_insert_ps((v) , (v) , (0b1110 | ((i) << 6) | (0b00 << 4)) ) )
+    ( _mm_cvtss_f32( _mm_insert_ps((v) , (v) , (0b1110 | ((i) << 6) | (0b00 << 4)) ) ) )
 
 //a * v
 static inline owl_v3f32 owl_v3f32_scalar_mul(owl_v3f32 v, float a)
@@ -152,5 +161,50 @@ float owl_v3f32_norminf(owl_v3f32 v);
 //0 : < 0
 //1 : >= 0
 int owl_v3f32_sign_mask(owl_v3f32 v);
+
+/*
+    F
+    I
+    L
+    T
+    E
+    R
+*/
+
+typedef __m128 owl_v3f32_filter;
+
+//null filter
+static inline owl_v3f32_filter owl_v3f32_filter_zero()
+{
+    return _mm_setzero_ps();
+}
+
+//(a, b, c) filter
+static inline owl_v3f32_filter owl_v3f32_filter_set(float a, float b, float c)
+{
+    return _mm_set_ps(0.0, c, b, a);
+}
+
+//Filter from a float[4]
+static inline owl_v3f32_filter owl_v3f32_filter_load4(const float* src)
+{
+    return _mm_load_ps(src);
+}
+
+//Filter to float[4]
+static inline float* owl_v3f32_filter_store4(float* dst, owl_v3f32_filter f)
+{
+    _mm_store_ps(dst, f);
+    return dst;
+}
+
+//(ax, by, cz) vector
+static inline owl_v3f32 owl_v3f32_filter_apply(owl_v3f32_filter f, owl_v3f32 v)
+{
+    return _mm_mul_ps(f, v);
+}
+
+#define owl_v3f32_unsafe_broadcast_comp(v, i) \
+    ( _mm_shuffle_ps((v), (v), 0b11000000 | ((i)<<0) | ((i)<<2) | ((i)<<4)) )
 
 #endif // OWL_V3F32_H_INCLUDED

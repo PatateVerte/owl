@@ -135,7 +135,7 @@ owl_mxf32_2x2* owl_mxf32_2x2_diagonalize_sym(owl_mxf32_2x2* D, owl_mxf32_2x2* P,
 
         *D = _mm_or_ps(
                         _mm_set_ss(vp_max),
-                        _mm_dp_ps(M, *P, 0b11001000)
+                        _mm_dp_ps(M, P_, 0b11001000)
                        );
 
         if(P != NULL)

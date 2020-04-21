@@ -104,14 +104,17 @@ owl_mxf32_3x3* owl_mxf32_3x3_transp(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A)
 //
 owl_v3f32 owl_mxf32_3x3_transform(owl_mxf32_3x3 const* A, owl_v3f32 v)
 {
-    owl_v3f32 v_ = v;
     owl_v3f32 vr = owl_v3f32_zero();
 
-    for(int j = 2 ; j >= 0 ; j--)
-    {
-        v_ = owl_v3f32_rotate_comp(v_);
-        vr = owl_v3f32_add_scalar_mul(vr, A->column[j], owl_v3f32_unsafe_get_component(v_, 0));
-    }
+    vr = owl_v3f32_filter_apply(owl_v3f32_unsafe_broadcast_comp(v, 0), A->column[0]);
+    vr = owl_v3f32_add(
+                        vr,
+                        owl_v3f32_filter_apply(owl_v3f32_unsafe_broadcast_comp(v, 1), A->column[1])
+                       );
+    vr = owl_v3f32_add(
+                        vr,
+                        owl_v3f32_filter_apply(owl_v3f32_unsafe_broadcast_comp(v, 2), A->column[2])
+                       );
 
     return vr;
 }
@@ -176,8 +179,8 @@ owl_mxf32_3x3* owl_mxf32_3x3_diagonalize_sym(owl_mxf32_3x3* D, owl_mxf32_3x3* P,
     {
         owl_mxf32_3x3 A_without_diag;
         A_without_diag.column[0] = owl_v3f32_unsafe_set_component(A->column[0], 0, 0.0);
-        A_without_diag.column[0] = owl_v3f32_unsafe_set_component(A->column[1], 1, 0.0);
-        A_without_diag.column[0] = owl_v3f32_unsafe_set_component(A->column[2], 2, 0.0);
+        A_without_diag.column[1] = owl_v3f32_unsafe_set_component(A->column[1], 1, 0.0);
+        A_without_diag.column[2] = owl_v3f32_unsafe_set_component(A->column[2], 2, 0.0);
         non_diag_term = owl_mxf32_3x3_norm2(&A_without_diag);
     }
 
