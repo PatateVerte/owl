@@ -128,7 +128,7 @@ static inline float owl_mxf32_2x2_norminf(owl_mxf32_2x2 const* A)
 }
 
 //Tr(A)
-static inline float owl_mxf32_2x2_Trace(owl_mxf32_2x2 const* A)
+static inline float owl_mxf32_2x2_trace(owl_mxf32_2x2 const* A)
 {
     return _mm_cvtss_f32(
                             _mm_add_ps(

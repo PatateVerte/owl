@@ -9,6 +9,7 @@ typedef enum
 
     OWL_MEMORY_ERROR,
 
+    OWL_DIMENSION_ERROR,
     OWL_TAYLOR_ERROR
 
 } owl_error;
