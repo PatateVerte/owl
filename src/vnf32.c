@@ -85,6 +85,62 @@ owl_Vnf32* owl_Vnf32_Zero(owl_Vnf32* Vf, owl_error* ret_error, owl_error const* 
     return Vf;
 }
 
+//V1[i]
+//
+//
+float owl_Vnf32_GetComponent(owl_Vnf32 const* V1, unsigned int i, owl_error* ret_error, owl_error const* pass_through_error)
+{
+    owl_error error = OWL_SUCCESS;
+
+    float a = 0.0;
+
+    OWL_PASS_THROUGH_ERROR_VERIFICATION(error, pass_through_error)
+    {
+        if(i < V1->n)
+        {
+            a = V1->data[i];
+        }
+        else
+        {
+            error = OWL_OUT_OF_BOUND_ERROR;
+        }
+    }
+
+    if(ret_error != NULL)
+    {
+        *ret_error = error;
+    }
+
+    return a;
+}
+
+//V1[i] = a
+//
+//
+owl_Vnf32* owl_Vnf32_SetComponent(owl_Vnf32* Vf, unsigned int i, float a, owl_error* ret_error, owl_error const* pass_through_error)
+{
+    owl_error error = OWL_SUCCESS;
+
+    OWL_PASS_THROUGH_ERROR_VERIFICATION(error, pass_through_error)
+    {
+        if(i < Vf->n)
+        {
+            Vf->data[i] = a;
+        }
+        else
+        {
+            error = OWL_OUT_OF_BOUND_ERROR;
+        }
+    }
+
+    if(ret_error != NULL)
+    {
+        *ret_error = error;
+    }
+
+    return Vf;
+}
+
 
 //Vf = a * V1
 //
