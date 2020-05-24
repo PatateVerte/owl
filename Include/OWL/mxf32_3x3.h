@@ -34,10 +34,10 @@ static inline owl_mxf32_3x3* owl_mxf32_3x3_zero(owl_mxf32_3x3* M)
 owl_mxf32_3x3* owl_mxf32_3x3_diag(owl_mxf32_3x3* M, float diag_val);
 
 //
-float owl_mxf32_3x3_get_element(owl_mxf32_3x3* M, int i, int j);
+float owl_mxf32_3x3_get_element(owl_mxf32_3x3* M, unsigned int i, unsigned int j);
 
 //
-owl_mxf32_3x3* owl_mxf32_3x3_set_element(owl_mxf32_3x3* M, float value, int i, int j);
+owl_mxf32_3x3* owl_mxf32_3x3_set_element(owl_mxf32_3x3* M, float value, unsigned int i, unsigned int j);
 
 //M = A + B
 owl_mxf32_3x3* owl_mxf32_3x3_add(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A, owl_mxf32_3x3 const* B);

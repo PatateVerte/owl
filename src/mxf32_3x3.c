@@ -16,10 +16,10 @@ owl_mxf32_3x3* owl_mxf32_3x3_diag(owl_mxf32_3x3* M, float diag_val)
 //
 //
 //
-float owl_mxf32_3x3_get_element(owl_mxf32_3x3* M, int i, int j)
+float owl_mxf32_3x3_get_element(owl_mxf32_3x3* M, unsigned int i, unsigned int j)
 {
-    int i_ = i % 3;
-    int j_ = j % 3;
+    unsigned int i_ = i % 3;
+    unsigned int j_ = j % 3;
 
     float flat_column[4] OWL_ALIGN16;
     owl_v3f32_store4(flat_column, M->column[j_]);
@@ -29,10 +29,10 @@ float owl_mxf32_3x3_get_element(owl_mxf32_3x3* M, int i, int j)
 //
 //
 //
-owl_mxf32_3x3* owl_mxf32_3x3_set_element(owl_mxf32_3x3* M, float value, int i, int j)
+owl_mxf32_3x3* owl_mxf32_3x3_set_element(owl_mxf32_3x3* M, float value, unsigned int i, unsigned int j)
 {
-    int i_ = i % 3;
-    int j_ = j % 3;
+    unsigned int i_ = i % 3;
+    unsigned int j_ = j % 3;
 
     float flat_column[4] OWL_ALIGN16;
     owl_v3f32_store4(flat_column, M->column[j_]);

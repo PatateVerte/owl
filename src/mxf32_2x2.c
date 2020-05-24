@@ -7,10 +7,10 @@
 //
 //
 //
-float owl_mxf32_2x2_get_element(owl_mxf32_2x2* M, int i, int j)
+float owl_mxf32_2x2_get_element(owl_mxf32_2x2* M, unsigned int i, unsigned int j)
 {
-    int i_ = i % 2;
-    int j_ = j % 2;
+    unsigned int i_ = i % 2;
+    unsigned int j_ = j % 2;
 
     float const* flat_matrix = (float const*)M;
     return flat_matrix[2 * j_ + i_];
@@ -19,10 +19,10 @@ float owl_mxf32_2x2_get_element(owl_mxf32_2x2* M, int i, int j)
 //
 //
 //
-owl_mxf32_2x2* owl_mxf32_2x2_set_element(owl_mxf32_2x2* M, float value, int i, int j)
+owl_mxf32_2x2* owl_mxf32_2x2_set_element(owl_mxf32_2x2* M, float value, unsigned int i, unsigned int j)
 {
-    int i_ = i % 2;
-    int j_ = j % 2;
+    unsigned int i_ = i % 2;
+    unsigned int j_ = j % 2;
 
     float* flat_matrix = (float*)M;
     flat_matrix[2 * j_ + i_] = value;

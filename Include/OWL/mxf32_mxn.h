@@ -20,11 +20,17 @@ owl_Mxf32_mxn* owl_Mxf32_mxn_Create(unsigned int m, unsigned int n, owl_error* r
 //Destroy owl_Mxf32_mxn
 void owl_Mxf32_mxn_Destroy(owl_Mxf32_mxn* M);
 
+//M = 0
+owl_Mxf32_mxn* owl_Mxf32_mxn_Zero(owl_Mxf32_mxn* M, owl_error* ret_error, owl_error const* pass_through_error);
+
+//M = "Diag_mn(a)"
+owl_Mxf32_mxn* owl_Mxf32_mxn_Diag(owl_Mxf32_mxn* M, float a, owl_error* ret_error, owl_error const* pass_through_error);
+
 //A[i, j]
-float owl_Mxf32_mxn_GetCoefficient(owl_Mxf32_mxn const* A, unsigned int i, unsigned int j, owl_error* ret_error, owl_error const* pass_through_error);
+float owl_Mxf32_mxn_GetElement(owl_Mxf32_mxn const* A, unsigned int i, unsigned int j, owl_error* ret_error, owl_error const* pass_through_error);
 
 //M[i, j] = a
-owl_Mxf32_mxn* owl_Mxf32_mxn_SetCoefficient(owl_Mxf32_mxn* M, unsigned int i, unsigned int j, float a, owl_error* ret_error, owl_error const* pass_through_error);
+owl_Mxf32_mxn* owl_Mxf32_mxn_SetElement(owl_Mxf32_mxn* M, unsigned int i, unsigned int j, float a, owl_error* ret_error, owl_error const* pass_through_error);
 
 //M = A + B
 owl_Mxf32_mxn* owl_Mxf32_mxn_Add(owl_Mxf32_mxn* M, owl_Mxf32_mxn const* A, owl_Mxf32_mxn const* B, owl_error* ret_error, owl_error const* pass_through_error);

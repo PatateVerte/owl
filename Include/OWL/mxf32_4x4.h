@@ -19,16 +19,26 @@ typedef struct
 
 //M = 0
 //Return M
-static inline owl_mxf32_4x4* owl_mxf32_4x4_zero(owl_mxf32_4x4* M);
+owl_mxf32_4x4* owl_mxf32_4x4_zero(owl_mxf32_4x4* M);
 
 //
 owl_mxf32_4x4* owl_mxf32_4x4_diag(owl_mxf32_4x4* M, float diag_val);
 
 //
-float owl_mxf32_4x4_get_element(owl_mxf32_4x4* M, int i, int j);
+static inline float owl_mxf32_4x4_get_element(owl_mxf32_4x4* M, unsigned int i, unsigned int j)
+{
+    return M->data[ (j % 4) * 4 + (i % 4) ];
+}
 
 //
-owl_mxf32_4x4* owl_mxf32_4x4_set_element(owl_mxf32_4x4* M, float value, int i, int j);
+static inline owl_mxf32_4x4* owl_mxf32_4x4_set_element(owl_mxf32_4x4* M, float value, unsigned int i, unsigned int j)
+{
+    M->data[ (j % 4) * 4 + (i % 4) ] = value;
+    return M;
+}
+
+//M = A
+owl_mxf32_4x4* owl_mxf32_4x4_copy(owl_mxf32_4x4* M, owl_mxf32_4x4 const* A);
 
 //M = A + B
 owl_mxf32_4x4* owl_mxf32_4x4_add(owl_mxf32_4x4* M, owl_mxf32_4x4 const* A, owl_mxf32_4x4 const* B);
@@ -38,6 +48,9 @@ owl_mxf32_4x4* owl_mxf32_4x4_sub(owl_mxf32_4x4* M, owl_mxf32_4x4 const* A, owl_m
 
 //M = a * A
 owl_mxf32_4x4* owl_mxf32_4x4_scalar_mul(owl_mxf32_4x4* M, owl_mxf32_4x4 const* A, float a);
+
+//M = A + a * B
+owl_mxf32_4x4* owl_mxf32_4x4_add_scalar_mul(owl_mxf32_4x4* M, owl_mxf32_4x4 const* A, owl_mxf32_4x4 const* B, float a);
 
 //M = tA
 owl_mxf32_4x4* owl_mxf32_4x4_transp(owl_mxf32_4x4* M, owl_mxf32_4x4 const* A);

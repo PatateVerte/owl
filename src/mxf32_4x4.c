@@ -1,6 +1,6 @@
 #include <OWL/mxf32_4x4.h>
 
-static inline owl_mxf32_4x4* owl_mxf32_4x4_zero(owl_mxf32_4x4* M)
+owl_mxf32_4x4* owl_mxf32_4x4_zero(owl_mxf32_4x4* M)
 {
     for(int j = 0 ; j < 4 ; j++)
     {
@@ -25,20 +25,25 @@ owl_mxf32_4x4* owl_mxf32_4x4_diag(owl_mxf32_4x4* M, float diag_val)
     return M;
 }
 
+//M = A
 //
-float owl_mxf32_4x4_get_element(owl_mxf32_4x4* M, int i, int j)
+//
+owl_mxf32_4x4* owl_mxf32_4x4_copy(owl_mxf32_4x4* M, owl_mxf32_4x4 const* A)
 {
-    return M->data[ (j % 4) * 4 + (i % 4) ];
-}
+    for(int j = 0 ; j < 4 ; j++)
+    {
+        _mm_storeu_ps(
+                        M->data + 4*j,
+                        _mm_loadu_ps(A->data + 4*j)
+                      );
+    }
 
-//
-owl_mxf32_4x4* owl_mxf32_4x4_set_element(owl_mxf32_4x4* M, float value, int i, int j)
-{
-    M->data[ (j % 4) * 4 + (i % 4) ] = value;
     return M;
 }
 
 //M = A + B
+//
+//
 owl_mxf32_4x4* owl_mxf32_4x4_add(owl_mxf32_4x4* M, owl_mxf32_4x4 const* A, owl_mxf32_4x4 const* B)
 {
     for(int j = 0 ; j < 4 ; j++)
@@ -54,6 +59,8 @@ owl_mxf32_4x4* owl_mxf32_4x4_add(owl_mxf32_4x4* M, owl_mxf32_4x4 const* A, owl_m
 }
 
 //M = A - B
+//
+//
 owl_mxf32_4x4* owl_mxf32_4x4_sub(owl_mxf32_4x4* M, owl_mxf32_4x4 const* A, owl_mxf32_4x4 const* B)
 {
     for(int j = 0 ; j < 4 ; j++)
@@ -69,6 +76,8 @@ owl_mxf32_4x4* owl_mxf32_4x4_sub(owl_mxf32_4x4* M, owl_mxf32_4x4 const* A, owl_m
 }
 
 //M = a * A
+//
+//
 owl_mxf32_4x4* owl_mxf32_4x4_scalar_mul(owl_mxf32_4x4* M, owl_mxf32_4x4 const* A, float a)
 {
     __m128 broadcast = _mm_set1_ps(a);
@@ -85,7 +94,31 @@ owl_mxf32_4x4* owl_mxf32_4x4_scalar_mul(owl_mxf32_4x4* M, owl_mxf32_4x4 const* A
     return M;
 }
 
+//M = A + a * B
+//
+//
+owl_mxf32_4x4* owl_mxf32_4x4_add_scalar_mul(owl_mxf32_4x4* M, owl_mxf32_4x4 const* A, owl_mxf32_4x4 const* B, float a)
+{
+    __m128 broadcast = _mm_set1_ps(a);
+
+    for(int j = 0 ; j < 4 ; j++)
+    {
+        __m128 tmp = _mm_add_ps(
+                                    _mm_loadu_ps(A->data + 4*j),
+                                    _mm_mul_ps(
+                                                _mm_loadu_ps(B->data + 4*j),
+                                               broadcast
+                                               )
+                                );
+        _mm_storeu_ps(M->data + 4*j, tmp);
+    }
+
+    return M;
+}
+
 //M = tA
+//
+//
 owl_mxf32_4x4* owl_mxf32_4x4_transp(owl_mxf32_4x4* M, owl_mxf32_4x4 const* A)
 {
     for(int j = 0 ; j < 4 ; j++)
@@ -107,6 +140,8 @@ owl_mxf32_4x4* owl_mxf32_4x4_transp(owl_mxf32_4x4* M, owl_mxf32_4x4 const* A)
 
 
 //M = A * B
+//
+//
 owl_mxf32_4x4* owl_mxf32_4x4_mul(owl_mxf32_4x4* M, owl_mxf32_4x4 const* A, owl_mxf32_4x4 const* B)
 {
     owl_mxf32_4x4 T;
@@ -142,18 +177,9 @@ owl_mxf32_4x4* owl_mxf32_4x4_mul(owl_mxf32_4x4* M, owl_mxf32_4x4 const* A, owl_m
     }
 }
 
-//M = A
-owl_mxf32_4x4* owl_mxf32_4x4_copy(owl_mxf32_4x4* M, owl_mxf32_4x4 const* A)
-{
-    for(int j = 0 ; j < 4 ; j++)
-    {
-        _mm_storeu_ps(M->data + 4*j, _mm_loadu_ps(A->data + 4*j));
-    }
-
-    return M;
-}
-
 //norm2(A)
+//
+//
 float owl_mxf32_4x4_norm2(owl_mxf32_4x4 const* A)
 {
     __m128 buffer = _mm_setzero_ps();
@@ -173,6 +199,8 @@ float owl_mxf32_4x4_norm2(owl_mxf32_4x4 const* A)
 }
 
 //norminf(A)
+//
+//
 float owl_mxf32_4x4_norminf(owl_mxf32_4x4 const* A)
 {
     __m128 buffer = _mm_setzero_ps();
@@ -190,6 +218,8 @@ float owl_mxf32_4x4_norminf(owl_mxf32_4x4 const* A)
 }
 
 //Tr(A)
+//
+//
 float owl_mxf32_4x4_trace(owl_mxf32_4x4 const* A)
 {
     float trace = 0.0;

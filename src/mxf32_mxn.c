@@ -72,10 +72,67 @@ void owl_Mxf32_mxn_Destroy(owl_Mxf32_mxn* M)
     }
 }
 
+//M = 0
+//
+//
+owl_Mxf32_mxn* owl_Mxf32_mxn_Zero(owl_Mxf32_mxn* M, owl_error* ret_error, owl_error const* pass_through_error)
+{
+    owl_error error = OWL_SUCCESS;
+
+    OWL_PASS_THROUGH_ERROR_VERIFICATION(error, pass_through_error)
+    {
+        for(unsigned int j = 0 ; j < M->n && error == OWL_SUCCESS ; j++)
+        {
+            owl_Vnf32_Zero(M->column[j], &error, &error);
+        }
+    }
+
+    if(ret_error != NULL)
+    {
+        *ret_error = error;
+    }
+
+    return M;
+}
+
+//M = "Diag_mn(a)"
+//
+//
+owl_Mxf32_mxn* owl_Mxf32_mxn_Diag(owl_Mxf32_mxn* M, float a, owl_error* ret_error, owl_error const* pass_through_error)
+{
+    owl_error error = OWL_SUCCESS;
+
+    OWL_PASS_THROUGH_ERROR_VERIFICATION(error, pass_through_error)
+    {
+        owl_Mxf32_mxn_Zero(M, &error, &error);
+
+        if(error == OWL_SUCCESS)
+        {
+            unsigned int r = M->m;
+            if(r > M->n)
+            {
+                r = M->n;
+            }
+
+            for(unsigned int j = 0 ; j < r ; j++)
+            {
+                owl_Mxf32_mxn_SetElement(M, j, j, a, &error, &error);
+            }
+        }
+    }
+
+    if(ret_error != NULL)
+    {
+        *ret_error = error;
+    }
+
+    return M;
+}
+
 //A[i, j]
 //
 //
-float owl_Mxf32_mxn_GetCoefficient(owl_Mxf32_mxn const* A, unsigned int i, unsigned int j, owl_error* ret_error, owl_error const* pass_through_error)
+float owl_Mxf32_mxn_GetElement(owl_Mxf32_mxn const* A, unsigned int i, unsigned int j, owl_error* ret_error, owl_error const* pass_through_error)
 {
     owl_error error = OWL_SUCCESS;
 
@@ -104,7 +161,7 @@ float owl_Mxf32_mxn_GetCoefficient(owl_Mxf32_mxn const* A, unsigned int i, unsig
 //M[i, j] = a
 //
 //
-owl_Mxf32_mxn* owl_Mxf32_mxn_SetCoefficient(owl_Mxf32_mxn* M, unsigned int i, unsigned int j, float a, owl_error* ret_error, owl_error const* pass_through_error)
+owl_Mxf32_mxn* owl_Mxf32_mxn_SetElement(owl_Mxf32_mxn* M, unsigned int i, unsigned int j, float a, owl_error* ret_error, owl_error const* pass_through_error)
 {
     owl_error error = OWL_SUCCESS;
 
@@ -261,7 +318,7 @@ owl_Mxf32_mxn* owl_Mxf32_mxn_Mul(owl_Mxf32_mxn* M, owl_Mxf32_mxn const* A, owl_M
         {
             owl_Vnf32* Uacc = owl_Vnf32_Create(M->m, &error, &error);
             owl_Mxf32_mxn* S = NULL;
-            owl_Mxf32_mxn* F = NULL;
+            owl_Mxf32_mxn* F;
 
             if(M != A)
             {

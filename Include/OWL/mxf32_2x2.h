@@ -42,10 +42,10 @@ static inline owl_mxf32_2x2* owl_mxf32_2x2_load(owl_mxf32_2x2* M, float const* s
 }
 
 //
-float owl_mxf32_2x2_get_element(owl_mxf32_2x2* M, int i, int j);
+float owl_mxf32_2x2_get_element(owl_mxf32_2x2* M, unsigned int i, unsigned int j);
 
 //
-owl_mxf32_2x2* owl_mxf32_2x2_set_element(owl_mxf32_2x2* M, float value, int i, int j);
+owl_mxf32_2x2* owl_mxf32_2x2_set_element(owl_mxf32_2x2* M, float value, unsigned int i, unsigned int j);
 
 //M = A + B
 static inline owl_mxf32_2x2* owl_mxf32_2x2_add(owl_mxf32_2x2* M, owl_mxf32_2x2 const* A, owl_mxf32_2x2 const* B)
