@@ -69,16 +69,7 @@ static inline owl_mxf32_3x3* owl_mxf32_3x3_copy(owl_mxf32_3x3* M, owl_mxf32_3x3 
 }
 
 //norm2(A)
-static inline float owl_mxf32_3x3_norm2(owl_mxf32_3x3 const* A)
-{
-    float square_norm = 0.0;
-    for(int j = 0 ; j < 3 ; j++)
-    {
-        square_norm += owl_v3f32_dot(A->column[j], A->column[j]);
-    }
-
-    return sqrtf(square_norm);
-}
+float owl_mxf32_3x3_norm2(owl_mxf32_3x3 const* A);
 
 //norminf(A)
 float owl_mxf32_3x3_norminf(owl_mxf32_3x3 const* A);
@@ -99,6 +90,9 @@ static inline float owl_mxf32_3x3_det(owl_mxf32_3x3 const* A)
 
 //M = A ^(-1)
 owl_mxf32_3x3* owl_mxf32_3x3_Inv(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A);
+
+//Return dominant eigenvalue
+float owl_mxf32_3x3_dominant_eigenvalue(owl_v3f32* eigenvector_ptr, owl_mxf32_3x3 const* A);
 
 //A = P * D * tP with A symmetric
 //A is considered invertible

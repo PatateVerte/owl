@@ -60,8 +60,8 @@ static inline owl_v3f32* owl_v3f32_base_xyz(owl_v3f32* base, float f)
 //Broadcast f within a vector
 static inline owl_v3f32 owl_v3f32_broadcast(float f)
 {
-    __m128 tmp = _mm_set1_ps(f);
-    return _mm_insert_ps(tmp, tmp, 0b00001000);
+    __m128 tmp = _mm_set_ss(f);
+    return _mm_shuffle_ps(tmp, tmp, 0b11000000);
 }
 
 //a + b
@@ -88,6 +88,12 @@ static inline owl_v3f32 owl_v3f32_sub(owl_v3f32 a, owl_v3f32 b)
 static inline owl_v3f32 owl_v3f32_scalar_mul(owl_v3f32 v, float a)
 {
     return _mm_mul_ps(v, _mm_set1_ps(a));
+}
+
+//Component by component mul
+static inline owl_v3f32 owl_v3f32_comp_mul(owl_v3f32 v1, owl_v3f32 v2)
+{
+    return _mm_mul_ps(v1, v2);
 }
 
 //v / a
