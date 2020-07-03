@@ -627,8 +627,11 @@ float* owl_Mxf32_mxn_sym_Diagonalize(float* eigenvalue_list, owl_Mxf32_mxn* P, o
                         }
                         owl_Vnf32_GramSchmidt(Psub->column, (owl_Vnf32 const**)Psub->column, n - r, &error, &error);
 
-                        owl_Mxf32_mxn* Asub_ = owl_Mxf32_mxn_Create(n - r - 1, n - r - 1, &error, &error);
+
+
                         owl_Mxf32_mxn* AEj = owl_Mxf32_mxn_Create(n - r, 1, &error, &error);
+
+                        owl_Mxf32_mxn* Asub_ = owl_Mxf32_mxn_Create(n - r - 1, n - r - 1, &error, &error);
                         owl_Mxf32_mxn* Q_ = owl_Mxf32_mxn_Create(n, n - r - 1, &error, &error);
 
                         if(error == OWL_SUCCESS)
