@@ -56,4 +56,8 @@ owl_Vnf32* owl_Vnf32_Mul(owl_Vnf32* Vf, owl_Vnf32 const* V1, owl_Vnf32 const* V2
 //Dot product
 float owl_Vnf32_Dot(owl_Vnf32 const* V1, owl_Vnf32 const* V2, owl_error* ret_error, owl_error const* pass_through_error);
 
+//Gram Schmidt process assuming the vectors from V are independent_list
+//All vectors must have the same dimension n, and list_len must be less than or equal to n
+owl_Vnf32** owl_Vnf32_GramSchmidt(owl_Vnf32** Vf_list, owl_Vnf32 const** V1_list, unsigned int list_len, owl_error* ret_error, owl_error const* pass_through_error);
+
 #endif // OWL_VNF32_H_INCLUDED

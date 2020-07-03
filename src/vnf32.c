@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <malloc.h>
+#include <stdbool.h>
 
 //Create Vnf32
 //
@@ -20,7 +21,7 @@ owl_Vnf32* owl_Vnf32_Create(unsigned int n, owl_error* ret_error, owl_error cons
             V->nb_hard_blocks = (n % OWL_HARD_BLOCK_F32_LEN == 0) ? (n / OWL_HARD_BLOCK_F32_LEN) : (n / OWL_HARD_BLOCK_F32_LEN) + 1;
 
             V->data = _aligned_malloc(OWL_HARD_BLOCK_F32_LEN * V->nb_hard_blocks * sizeof(*(V->data)), 16);
-            if(V->data != NULL)
+            if(n == 0 || V->data != NULL)
             {
                 owl_Vnf32_Zero(V, &error, &error);
             }
@@ -408,5 +409,53 @@ float owl_Vnf32_Dot(owl_Vnf32 const* V1, owl_Vnf32 const* V2, owl_error* ret_err
     }
 
     return dot;
+}
+
+//Gram Schmidt process assuming the vectors from V are independent_list
+//All vectors must have the same dimension n, and list_len must be less than or equal to n
+//
+owl_Vnf32** owl_Vnf32_GramSchmidt(owl_Vnf32** Vf_list, owl_Vnf32 const** V1_list, unsigned int list_len, owl_error* ret_error, owl_error const* pass_through_error)
+{
+    owl_error error = OWL_SUCCESS;
+
+    OWL_PASS_THROUGH_ERROR_VERIFICATION(error, pass_through_error)
+    {
+        if(list_len > 0)
+        {
+            unsigned int j0 = list_len - 1;
+            unsigned int n = V1_list[j0]->n;
+
+            if(list_len <= n)
+            {
+                unsigned int j0 = list_len - 1;
+                owl_Vnf32_GramSchmidt(Vf_list, V1_list, list_len - 1, &error, &error);
+
+                if(error == OWL_SUCCESS)
+                {
+                    owl_Vnf32_Copy(Vf_list[j0], V1_list[j0], &error, &error);
+
+                    for(unsigned int j = 0 ; j < j0 ; j++)
+                    {
+                        float dot = owl_Vnf32_Dot(Vf_list[j], Vf_list[j0], &error, &error);
+                        owl_Vnf32_AddScalarMul(Vf_list[j0], Vf_list[j0], Vf_list[j], -dot, &error, &error);
+                    }
+
+                    float square_norm = owl_Vnf32_Dot(Vf_list[j0], Vf_list[j0], &error, &error);
+                    owl_Vnf32_ScalarMul(Vf_list[j0], Vf_list[j0], 1.0 / sqrtf(square_norm), &error, &error);
+                }
+            }
+            else
+            {
+                error = OWL_DIMENSION_ERROR;
+            }
+        }
+    }
+
+    if(ret_error != NULL)
+    {
+        *ret_error = error;
+    }
+
+    return Vf_list;
 }
 

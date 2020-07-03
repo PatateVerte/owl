@@ -95,7 +95,6 @@ owl_mxf32_3x3* owl_mxf32_3x3_Inv(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A);
 float owl_mxf32_3x3_sym_dominant_eigenvalue(owl_v3f32* eigenvector_ptr, owl_mxf32_3x3 const* A);
 
 //A = P * D * tP with A symmetric
-//A is considered invertible
 //Parameter P is optional
 //Return D
 owl_mxf32_3x3* owl_mxf32_3x3_sym_diagonalize(owl_mxf32_3x3* D, owl_mxf32_3x3* P, owl_mxf32_3x3 const* A);

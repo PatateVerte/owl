@@ -56,5 +56,6 @@ float owl_Mxf32_mxn_Tr(owl_Mxf32_mxn const* A, owl_error* ret_error, owl_error c
 //Return the dominant eigenvalue of A
 float owl_Mxf32_mxn_sym_DominantEigenvalue(owl_Vnf32* Eigenvector, owl_Mxf32_mxn const* A, owl_error* ret_error, owl_error const* pass_through_error);
 
+float* owl_Mxf32_mxn_sym_Diagonalize(float* eigenvalue_list, owl_Mxf32_mxn* P, owl_Mxf32_mxn const* A, owl_error* ret_error, owl_error const* pass_through_error);
 
 #endif // OWL_MXF32_MXN_H_INCLUDED

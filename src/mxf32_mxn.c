@@ -13,7 +13,7 @@ owl_Mxf32_mxn* owl_Mxf32_mxn_Create(unsigned int m, unsigned int n, owl_error* r
             M->m = m;
             M->n = n;
             M->column = malloc(n * sizeof(*M->column));
-            if(M->column != NULL)
+            if(n == 0 || M->column != NULL)
             {
                 for(int j = 0 ; j < n ; j++)
                 {
@@ -571,4 +571,113 @@ float owl_Mxf32_mxn_sym_DominantEigenvalue(owl_Vnf32* Eigenvector, owl_Mxf32_mxn
     }
 
     return eigenvalue;
+}
+
+//A = P * D * tP with A symmetric and D = diag(eigenvalue_list)
+//The length of eigenvalue_list must be at least n
+//Parameter P is optional
+//Return eigenvalue_list
+float* owl_Mxf32_mxn_sym_Diagonalize(float* eigenvalue_list, owl_Mxf32_mxn* P, owl_Mxf32_mxn const* A, owl_error* ret_error, owl_error const* pass_through_error)
+{
+    owl_error error = OWL_SUCCESS;
+
+    OWL_PASS_THROUGH_ERROR_VERIFICATION(error, pass_through_error)
+    {
+        if(A->m == A->n)
+        {
+            unsigned int n = A->n;
+
+            if(n > 0)
+            {
+                owl_Vnf32* DominantEigenvector = owl_Vnf32_Create(n, &error, &error);
+                owl_Mxf32_mxn* Q = owl_Mxf32_mxn_Create(n, n, &error, &error);
+                owl_Mxf32_mxn* Q_ = owl_Mxf32_mxn_Create(n, n - 1, &error, &error);
+                owl_Mxf32_mxn* Asub = owl_Mxf32_mxn_Create(n - 1, n - 1, &error, &error);
+
+                if(error == OWL_SUCCESS)
+                {
+                    eigenvalue_list[0] = owl_Mxf32_mxn_sym_DominantEigenvalue(DominantEigenvector, A, &error, &error);
+
+
+                    //Fills Q=(Q1|...|Qn) with an orthonormal base and Q1=DominantEigenVector
+                    unsigned int i0 = 0;
+                    float max_abs_component = 0.0;
+                    for(unsigned int i = 0 ; i < n ; i++)
+                    {
+                        float tmp_abs_component = fabsf(owl_Vnf32_GetComponent(DominantEigenvector, i, &error, &error));
+                        if(tmp_abs_component > max_abs_component)
+                        {
+                            i0 = i;
+                            max_abs_component = tmp_abs_component;
+                        }
+                    }
+                    owl_Vnf32_Copy(Q->column[0], DominantEigenvector, &error, &error);
+                    for(unsigned int j = 1 ; j < n ; j++)
+                    {
+                        owl_Vnf32_Zero(Q->column[j], &error, &error);
+                        unsigned int i = (j > i0) ? j : j - 1;
+                        owl_Vnf32_SetComponent(Q->column[j], i, 1.0, &error, &error);
+                    }
+                    owl_Vnf32_GramSchmidt(Q->column, (owl_Vnf32 const**)Q->column, n, &error, &error);
+                    //Fills Q_=(Q2|...|Qn)
+                    for(unsigned int j = 1 ; j < n ; j++)
+                    {
+                        owl_Vnf32_Copy(Q_->column[j - 1], Q->column[j], &error, &error);
+                    }
+
+                    //Fills Asub
+                    owl_Mxf32_mxn_Mul(Q, A, Q, &error, &error);
+                    for(unsigned int i = 0 ; i < n - 1 ; i++)
+                    {
+                        for(unsigned int j = 0 ; j < n - 1 ; j++)
+                        {
+                            float a = owl_Vnf32_Dot(Q_->column[i], Q->column[j + 1], &error, &error);
+                            owl_Mxf32_mxn_SetElement(Asub, i, j, a, &error, &error);
+                        }
+                    }
+
+                    if(P == NULL)
+                    {
+                        owl_Mxf32_mxn_sym_Diagonalize(eigenvalue_list + 1, NULL, Asub, &error, &error);
+                    }
+                    else
+                    {
+                        owl_Mxf32_mxn* Psub = owl_Mxf32_mxn_Create(n - 1, n - 1, &error, &error);
+
+                        if(error == OWL_SUCCESS)
+                        {
+                            owl_Mxf32_mxn_sym_Diagonalize(eigenvalue_list + 1, Psub, Asub, &error, &error);
+
+                            owl_Mxf32_mxn_Mul(Q_, Q_, Psub, &error, &error);
+
+                            owl_Vnf32_Copy(P->column[0], DominantEigenvector, &error, &error);
+                            for(unsigned int j = 1 ; j < n ; j++)
+                            {
+                                owl_Vnf32_Copy(P->column[j], Q_->column[j - 1], &error, &error);
+                            }
+                        }
+
+                        owl_Mxf32_mxn_Destroy(Psub);
+                    }
+
+                }
+
+                owl_Vnf32_Destroy(DominantEigenvector);
+                owl_Mxf32_mxn_Destroy(Q);
+                owl_Mxf32_mxn_Destroy(Q_);
+                owl_Mxf32_mxn_Destroy(Asub);
+            }
+        }
+        else
+        {
+            error = OWL_DIMENSION_ERROR;
+        }
+    }
+
+    if(ret_error != NULL)
+    {
+        *ret_error = error;
+    }
+
+    return eigenvalue_list;
 }
