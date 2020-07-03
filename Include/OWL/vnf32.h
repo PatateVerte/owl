@@ -29,6 +29,9 @@ void owl_Vnf32_Destroy(owl_Vnf32* V);
 //Vf = 0
 owl_Vnf32* owl_Vnf32_Zero(owl_Vnf32* Vf, owl_error* ret_error, owl_error const* pass_through_error);
 
+//Vf = V
+owl_Vnf32* owl_Vnf32_Copy(owl_Vnf32* Vf, owl_Vnf32 const* V1, owl_error* ret_error, owl_error const* pass_through_error);
+
 //V1[i]
 float owl_Vnf32_GetComponent(owl_Vnf32 const* V1, unsigned int i, owl_error* ret_error, owl_error const* pass_through_error);
 

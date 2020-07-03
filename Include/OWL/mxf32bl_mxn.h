@@ -54,4 +54,7 @@ owl_Mxf32bl_mxn* owl_Mxf32bl_mxn_AddScalarMul(owl_Mxf32bl_mxn* M, owl_Mxf32bl_mx
 //M = A * B
 owl_Mxf32bl_mxn* owl_Mxf32bl_mxn_Mul(owl_Mxf32bl_mxn* M, owl_Mxf32bl_mxn const* A, owl_Mxf32bl_mxn const* B, owl_error* ret_error, owl_error const* pass_through_error);
 
+//Tr(A)
+float owl_Mxf32bl_mxn_Tr(owl_Mxf32bl_mxn const* A, owl_error* ret_error, owl_error const* pass_through_error);
+
 #endif // OWL_MXF32BL_MXN_H_INCLUDED

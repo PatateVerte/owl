@@ -95,6 +95,36 @@ owl_Mxf32_mxn* owl_Mxf32_mxn_Zero(owl_Mxf32_mxn* M, owl_error* ret_error, owl_er
     return M;
 }
 
+//M = A
+//
+//
+owl_Mxf32_mxn* owl_Mxf32_mxn_Copy(owl_Mxf32_mxn* M, owl_Mxf32_mxn const* A, owl_error* ret_error, owl_error const* pass_through_error)
+{
+    owl_error error = OWL_SUCCESS;
+
+    OWL_PASS_THROUGH_ERROR_VERIFICATION(error, pass_through_error)
+    {
+        if(M->m == A->m && M->n == A->n)
+        {
+            for(unsigned int j = 0 ; j < M->n && error == OWL_SUCCESS ; j++)
+            {
+                owl_Vnf32_Copy(M->column[j], A->column[j], &error, &error);
+            }
+        }
+        else
+        {
+            error = OWL_DIMENSION_ERROR;
+        }
+    }
+
+    if(ret_error != NULL)
+    {
+        *ret_error = error;
+    }
+
+    return M;
+}
+
 //M = "Diag_mn(a)"
 //
 //
@@ -369,4 +399,176 @@ owl_Mxf32_mxn* owl_Mxf32_mxn_Mul(owl_Mxf32_mxn* M, owl_Mxf32_mxn const* A, owl_M
     }
 
     return M;
+}
+
+//Tr(A)
+//
+//
+float owl_Mxf32_mxn_Tr(owl_Mxf32_mxn const* A, owl_error* ret_error, owl_error const* pass_through_error)
+{
+    owl_error error = OWL_SUCCESS;
+
+    float Tr = 0.0;
+
+    OWL_PASS_THROUGH_ERROR_VERIFICATION(error, pass_through_error)
+    {
+        if(A->m == A->n)
+        {
+            unsigned int n = A->n;
+            for(unsigned int j = 0 ; j < n ; j++)
+            {
+                Tr += owl_Vnf32_GetComponent(A->column[j], j, &error, &error);
+            }
+        }
+        else
+        {
+            error = OWL_DIMENSION_ERROR;
+        }
+    }
+
+    if(ret_error != NULL)
+    {
+        *ret_error = error;
+    }
+
+    return Tr;
+}
+
+//Return the dominant eigenvector of a symetric matrix
+//
+//
+float owl_Mxf32_mxn_sym_DominantEigenvalue(owl_Vnf32* Eigenvector, owl_Mxf32_mxn const* A, owl_error* ret_error, owl_error const* pass_through_error)
+{
+    owl_error error = OWL_SUCCESS;
+
+    float eigenvalue = 0.0;
+
+    OWL_PASS_THROUGH_ERROR_VERIFICATION(error, pass_through_error)
+    {
+        if(A->m == A->n && (Eigenvector == NULL || Eigenvector->n == A->n))
+        {
+            unsigned int n = A->n;
+
+            if(n == 1)
+            {
+                eigenvalue = owl_Vnf32_GetComponent(A->column[0], 0, &error, &error);
+
+                if(Eigenvector != NULL)
+                {
+                    owl_Vnf32_SetComponent(Eigenvector, 0, 1.0, &error, &error);
+                }
+            }
+            else if(n > 1)
+            {
+                float const delta = 1.0 / ((float)(1<<24));
+                float const eps = delta / (2.0 * sqrtf((float)n));
+                float const sqrt_eps = sqrtf(eps);
+                float const f_sqrt_eps = 2.0 * sqrt_eps / ((1.0 + sqrt_eps) * (1.0 + sqrt_eps));
+
+                unsigned int k = 1;
+                owl_Mxf32_mxn* A1 = owl_Mxf32_mxn_Create(n, n, &error, &error);
+                owl_Mxf32_mxn_Mul(A1, A, A, &error, &error);
+                owl_Mxf32_mxn* Ak = owl_Mxf32_mxn_Create(n, n, &error, &error);
+                owl_Mxf32_mxn_Copy(Ak, A1, &error, &error);
+                float Tr = owl_Mxf32_mxn_Tr(Ak, &error, &error);
+                owl_Mxf32_mxn* Tk = owl_Mxf32_mxn_Create(n, n, &error, &error);
+
+                owl_Mxf32_mxn* A1_k_MatEigenvector = owl_Mxf32_mxn_Create(n, 1, &error, &error);
+                owl_Mxf32_mxn* k_MatEigenvector = owl_Mxf32_mxn_Create(n, 1, &error, &error);
+
+                owl_Vnf32* V1 = owl_Vnf32_Create(n, &error, &error);
+                owl_Vnf32* V2 = owl_Vnf32_Create(n, &error, &error);
+
+                if(error == OWL_SUCCESS)
+                {
+                    if(Tr > 0.0)
+                    {
+                        do
+                        {
+                            owl_Mxf32_mxn_ScalarMul(Tk, Ak, 1.0 / Tr, &error, &error);
+                            owl_Mxf32_mxn_Mul(Ak, Tk, Tk, &error, &error);
+                            Tr = owl_Mxf32_mxn_Tr(Ak, &error, &error);
+
+                            k++;
+
+                        } while(k <= 27 && Tr > 0.0 && 1.0 - Tr > f_sqrt_eps);
+                    }
+
+                    unsigned int j0 = 0;
+                    float square_norm = 0.0;
+                    for(unsigned int j = 0 ; j < n ; j++)
+                    {
+                        float tmp_square_norm = owl_Vnf32_Dot(Ak->column[j], Ak->column[j], &error, &error);
+                        if(tmp_square_norm > square_norm)
+                        {
+                            j0 = j;
+                            square_norm = tmp_square_norm;
+                        }
+                    }
+
+                    owl_Vnf32* k_Eigenvector = k_MatEigenvector->column[0];
+                    owl_Vnf32_ScalarMul(k_Eigenvector, Ak->column[j0], 1.0 / sqrtf(square_norm), &error, &error);
+                    owl_Vnf32* A1_k_Eigenvector = A1_k_MatEigenvector->column[0];
+
+                    if(square_norm > 0.0)
+                    {
+                        owl_Mxf32_mxn_Mul(A1_k_MatEigenvector, A1, k_MatEigenvector, &error, &error);
+                        float abs_eigenvalue = sqrtf(owl_Vnf32_Dot(k_Eigenvector, A1_k_Eigenvector, &error, &error));
+
+                        owl_Vnf32_AddScalarMul(V1, A1_k_Eigenvector, k_Eigenvector, abs_eigenvalue, &error, &error);
+                        float n1 = owl_Vnf32_Dot(V1, V1, &error, &error);
+                        owl_Vnf32_AddScalarMul(V2, A1_k_Eigenvector, k_Eigenvector, -abs_eigenvalue, &error, &error);
+                        float n2 = owl_Vnf32_Dot(V2, V2, &error, &error);
+
+                        if(n1 >= n2)
+                        {
+                            owl_Vnf32_ScalarMul(k_Eigenvector, V1, 1.0 / sqrtf(n1), &error, &error);
+                        }
+                        else
+                        {
+                            owl_Vnf32_ScalarMul(k_Eigenvector, V2, 1.0 / sqrtf(n2), &error, &error);
+                        }
+
+                        owl_Mxf32_mxn_Mul(A1_k_MatEigenvector, A, k_MatEigenvector, &error, &error);
+                        eigenvalue = owl_Vnf32_Dot(k_Eigenvector, A1_k_Eigenvector, &error, &error);
+
+                        if(Eigenvector != NULL)
+                        {
+                            owl_Vnf32_Copy(Eigenvector, k_Eigenvector, &error, &error);
+                        }
+                    }
+                    else
+                    {
+                        eigenvalue = 0.0;
+
+                        if(Eigenvector != NULL)
+                        {
+                            owl_Vnf32_Zero(Eigenvector, &error, &error);
+                            owl_Vnf32_SetComponent(Eigenvector, 0, 1.0, &error, &error);
+                        }
+                    }
+                }
+
+                owl_Mxf32_mxn_Destroy(A1);
+                owl_Mxf32_mxn_Destroy(Ak);
+                owl_Mxf32_mxn_Destroy(Tk);
+                owl_Mxf32_mxn_Destroy(A1_k_MatEigenvector);
+                owl_Mxf32_mxn_Destroy(k_MatEigenvector);
+
+                owl_Vnf32_Destroy(V1);
+                owl_Vnf32_Destroy(V2);
+            }
+        }
+        else
+        {
+            error = OWL_DIMENSION_ERROR;
+        }
+    }
+
+    if(ret_error != NULL)
+    {
+        *ret_error = error;
+    }
+
+    return eigenvalue;
 }

@@ -85,6 +85,40 @@ owl_Vnf32* owl_Vnf32_Zero(owl_Vnf32* Vf, owl_error* ret_error, owl_error const* 
     return Vf;
 }
 
+//Vf = V1
+//
+//
+owl_Vnf32* owl_Vnf32_Copy(owl_Vnf32* Vf, owl_Vnf32 const* V1, owl_error* ret_error, owl_error const* pass_through_error)
+{
+    owl_error error = OWL_SUCCESS;
+
+    OWL_PASS_THROUGH_ERROR_VERIFICATION(error, pass_through_error)
+    {
+        if(Vf->n == V1->n)
+        {
+            for(unsigned int b = 0 ; b < Vf->nb_hard_blocks ; b++)
+            {
+                unsigned int i = b * OWL_HARD_BLOCK_F32_LEN;
+                _mm_storeu_ps(
+                                Vf->data + i,
+                                _mm_loadu_ps(V1->data + i)
+                              );
+            }
+        }
+        else
+        {
+            error = OWL_DIMENSION_ERROR;
+        }
+    }
+
+    if(ret_error != NULL)
+    {
+        *ret_error = error;
+    }
+
+    return Vf;
+}
+
 //V1[i]
 //
 //
@@ -348,7 +382,7 @@ float owl_Vnf32_Dot(owl_Vnf32 const* V1, owl_Vnf32 const* V2, owl_error* ret_err
         {
             __m128 acc = _mm_setzero_ps();
 
-            for(unsigned int b = 0 ; b < V1->n ; b++)
+            for(unsigned int b = 0 ; b < V1->nb_hard_blocks ; b++)
             {
                 unsigned int i = b * OWL_HARD_BLOCK_F32_LEN;
                 acc = _mm_add_ps(

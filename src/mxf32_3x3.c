@@ -185,16 +185,15 @@ owl_mxf32_3x3* owl_mxf32_3x3_Inv(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A)
     return owl_mxf32_3x3_transp(M, &inv_det_comA);
 }
 
-#define power_iter_eps (1.0 / (float)(1<<12))
-#define power_iter_nb_loop
-
 //Return dominant eigenvalue
 //
 //
-float owl_mxf32_3x3_dominant_eigenvalue(owl_v3f32* eigenvector_ptr, owl_mxf32_3x3 const* A)
+float owl_mxf32_3x3_sym_dominant_eigenvalue(owl_v3f32* eigenvector_ptr, owl_mxf32_3x3 const* A)
 {
-    float const eps = power_iter_eps / 3.0;
-    float const f_eps = 2.0 * eps / ((1.0 + eps) * (1.0 + eps));
+    float const delta = 1.0 / ((float)(1<<24));
+    float const eps = delta / (2.0 * sqrtf(3.0));
+    float const sqrt_eps = sqrtf(eps);
+    float const f_sqrt_eps = 2.0 * sqrt_eps / ((1.0 + sqrt_eps) * (1.0 + sqrt_eps));
 
     float eigenvalue = 0.0;
     owl_v3f32 eigenvector = owl_v3f32_zero();
@@ -216,7 +215,7 @@ float owl_mxf32_3x3_dominant_eigenvalue(owl_v3f32* eigenvector_ptr, owl_mxf32_3x
 
             k++;
 
-        } while(k <= 27 && Tr > 0.0 && 1.0 - Tr > f_eps);
+        } while(k <= 27 && Tr > 0.0 && 1.0 - Tr > f_sqrt_eps);
     }
 
     float square_norm = 0.0;
@@ -268,7 +267,7 @@ float owl_mxf32_3x3_dominant_eigenvalue(owl_v3f32* eigenvector_ptr, owl_mxf32_3x
 //A = P * D * tP
 //
 //
-owl_mxf32_3x3* owl_mxf32_3x3_diagonalize_sym(owl_mxf32_3x3* D, owl_mxf32_3x3* P, owl_mxf32_3x3 const* A)
+owl_mxf32_3x3* owl_mxf32_3x3_sym_diagonalize(owl_mxf32_3x3* D, owl_mxf32_3x3* P, owl_mxf32_3x3 const* A)
 {
     #define diag_nb_iter 25
 
@@ -295,7 +294,7 @@ owl_mxf32_3x3* owl_mxf32_3x3_diagonalize_sym(owl_mxf32_3x3* D, owl_mxf32_3x3* P,
 
         //Computes an eigenvector associated with vp_max
         owl_v3f32 V0;
-        float vp_max = owl_mxf32_3x3_dominant_eigenvalue(&V0, A);
+        float vp_max = owl_mxf32_3x3_sym_dominant_eigenvalue(&V0, A);
 
         owl_mxf32_3x3 B;
         owl_mxf32_3x3_diag(&B, 1.0);
