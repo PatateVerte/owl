@@ -102,7 +102,7 @@ owl_mxf32_3x3* owl_mxf32_3x3_transp(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A)
 //A * v
 //
 //
-owl_v3f32 owl_mxf32_3x3_transform(owl_mxf32_3x3 const* A, owl_v3f32 v)
+owl_v3f32 owl_mxf32_3x3_transform_v3f32(owl_mxf32_3x3 const* A, owl_v3f32 v)
 {
     owl_v3f32 vr = owl_v3f32_zero();
 
@@ -128,7 +128,7 @@ owl_mxf32_3x3* owl_mxf32_3x3_mul(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A, owl_m
 
     for(int j = 0 ; j < 3 ; j++)
     {
-        S.column[j] = owl_mxf32_3x3_transform(A, B->column[j]);
+        S.column[j] = owl_mxf32_3x3_transform_v3f32(A, B->column[j]);
     }
 
     owl_mxf32_3x3_copy(M, &S);
@@ -234,10 +234,10 @@ float owl_mxf32_3x3_sym_dominant_eigenvalue(owl_v3f32* eigenvector_ptr, owl_mxf3
 
     if(square_norm > 0.0)
     {
-        owl_v3f32 A1_k_eigenvector = owl_mxf32_3x3_transform(&A1, k_eigenvector);
+        owl_v3f32 A1_k_eigenvector = owl_mxf32_3x3_transform_v3f32(&A1, k_eigenvector);
         float abs_eigenvalue = sqrtf(owl_v3f32_dot(k_eigenvector, A1_k_eigenvector) / square_norm);
 
-        owl_v3f32 A_k_eigenvector = owl_mxf32_3x3_transform(A, k_eigenvector);
+        owl_v3f32 A_k_eigenvector = owl_mxf32_3x3_transform_v3f32(A, k_eigenvector);
 
         owl_v3f32 v1 = owl_v3f32_add_scalar_mul(A_k_eigenvector, k_eigenvector, abs_eigenvalue);
         float n1 = owl_v3f32_dot(v1, v1);
@@ -247,7 +247,7 @@ float owl_mxf32_3x3_sym_dominant_eigenvalue(owl_v3f32* eigenvector_ptr, owl_mxf3
         eigenvector = owl_v3f32_normalize((n1 >= n2) ? v1 : v2);
         eigenvalue = owl_v3f32_dot(
                                     eigenvector,
-                                    owl_mxf32_3x3_transform(A, eigenvector)
+                                    owl_mxf32_3x3_transform_v3f32(A, eigenvector)
                                    );
     }
     else
@@ -295,8 +295,8 @@ float* owl_mxf32_3x3_sym_diagonalize(float* eigenvalue_list, owl_mxf32_3x3* P, o
     {
         owl_v3f32 Im_Bs[2] =
         {
-            owl_mxf32_3x3_transform(A, B_sev[0]),
-            owl_mxf32_3x3_transform(A, B_sev[1])
+            owl_mxf32_3x3_transform_v3f32(A, B_sev[0]),
+            owl_mxf32_3x3_transform_v3f32(A, B_sev[1])
         };
 
         flat_As[0] = owl_v3f32_dot(Im_Bs[0], B_sev[0]);

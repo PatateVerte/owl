@@ -52,7 +52,7 @@ owl_mxf32_3x3* owl_mxf32_3x3_scalar_mul(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A
 owl_mxf32_3x3* owl_mxf32_3x3_transp(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A);
 
 //Transform vector with A
-owl_v3f32 owl_mxf32_3x3_transform(owl_mxf32_3x3 const* A, owl_v3f32 v);
+owl_v3f32 owl_mxf32_3x3_transform_v3f32(owl_mxf32_3x3 const* A, owl_v3f32 v);
 
 
 //M = A * B
