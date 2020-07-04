@@ -94,9 +94,9 @@ owl_mxf32_3x3* owl_mxf32_3x3_Inv(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A);
 //Return dominant eigenvalue
 float owl_mxf32_3x3_sym_dominant_eigenvalue(owl_v3f32* eigenvector_ptr, owl_mxf32_3x3 const* A);
 
-//A = P * D * tP with A symmetric
+//A = P * D * tP with A symmetric and D=diag(eigenvalue_list)
 //Parameter P is optional
-//Return D
-owl_mxf32_3x3* owl_mxf32_3x3_sym_diagonalize(owl_mxf32_3x3* D, owl_mxf32_3x3* P, owl_mxf32_3x3 const* A);
+//Return eigenvalue_list
+float* owl_mxf32_3x3_sym_diagonalize(float* eigenvalue_list, owl_mxf32_3x3* P, owl_mxf32_3x3 const* A);
 
 #endif // OWL_MXF32_3X3_H_INCLUDED

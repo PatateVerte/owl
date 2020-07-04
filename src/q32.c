@@ -81,3 +81,80 @@ owl_v3f32 owl_q32_transform_v3f32(owl_q32 q, owl_v3f32 u)
     return owl_v3f32_add(rot, rot);
 
 }
+
+//Transform a rotation matrix to a quaternion
+//
+//
+owl_q32 owl_q32_from_rotation_matrix(owl_mxf32_3x3 const* O)
+{
+    //r = 0
+    __m128 r = _mm_setzero_ps();
+
+    //r33
+    r = _mm_addsub_ps(r, _mm_shuffle_ps(O->column[2], O->column[2], 0b10101010));
+
+    //r22
+    r = _mm_shuffle_ps(r, r, 0b10110100);
+    r = _mm_addsub_ps(r, _mm_shuffle_ps(O->column[1], O->column[1], 0b01010101));
+
+    //r11
+    r = _mm_shuffle_ps(r, r, 0b00110110);
+    r = _mm_addsub_ps(r, _mm_shuffle_ps(O->column[0], O->column[0], 0b00000000));
+
+    //Reordering
+    r = _mm_shuffle_ps(r, r, 0b00101101);
+
+    //Sign mask
+    __m128 sign = _mm_setzero_ps();
+
+    //Result 2
+    __m128 p2;
+    __m128 tmp;
+    //r32 +- r23
+    tmp = _mm_addsub_ps(
+                            _mm_shuffle_ps(O->column[1], O->column[1], 0b10101010),
+                            _mm_shuffle_ps(O->column[2], O->column[2], 0b01010101)
+                       );
+    sign = _mm_insert_ps(sign, tmp, 0b01010000);
+    tmp = _mm_shuffle_ps(tmp, tmp, 0b01010000);
+    p2 = _mm_mul_ps(tmp, tmp);
+    //r13 +- r31
+    tmp = _mm_addsub_ps(
+                        _mm_shuffle_ps(O->column[2], O->column[2], 0b00000000),
+                        _mm_shuffle_ps(O->column[0], O->column[0], 0b10101010)
+                     );
+    sign = _mm_insert_ps(sign, tmp, 0b01100000);
+    tmp = _mm_shuffle_ps(tmp, tmp, 0b01000100);
+    p2 = _mm_add_ps(p2, _mm_mul_ps(tmp, tmp));
+    //r21 +- r12
+    tmp = _mm_addsub_ps(
+                            _mm_shuffle_ps(O->column[0], O->column[0], 0b01010101),
+                            _mm_shuffle_ps(O->column[1], O->column[1], 0b00000000)
+                        );
+    sign = _mm_insert_ps(sign, tmp, 0b01110000);
+    tmp = _mm_shuffle_ps(tmp, tmp, 0b00010100);
+    p2 = _mm_add_ps(p2, _mm_mul_ps(tmp, tmp));
+    //
+    p2 = _mm_div_ps(
+                        p2,
+                        _mm_sub_ps(_mm_set1_ps(3.0), r)
+                    );
+
+    //Result 1
+    __m128 p1 = _mm_add_ps(_mm_set1_ps(1.0), r);
+
+    //Final result
+    __m128 mask = _mm_cmpeq_ps(r, _mm_setzero_ps());
+    __m128 p = _mm_or_ps(_mm_and_ps(mask, p1), _mm_andnot_ps(mask, p2));
+    p = _mm_mul_ps(
+                    _mm_set1_ps(0.5),
+                    _mm_sqrt_ps(p)
+                   );
+
+    __m128 p_plus = p;
+    __m128 p_minus = _mm_sub_ps(_mm_setzero_ps(), p);
+    sign = _mm_cmpeq_ps(sign, _mm_setzero_ps());
+    p = _mm_or_ps(_mm_and_ps(sign, p_plus), _mm_andnot_ps(sign, p_minus));
+
+    return p;
+}

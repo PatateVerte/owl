@@ -149,10 +149,9 @@ static inline float owl_mxf32_2x2_det(owl_mxf32_2x2 const* A)
 //M = A ^(-1)
 owl_mxf32_2x2* owl_mxf32_2x2_Inv(owl_mxf32_2x2* M, owl_mxf32_2x2 const* A);
 
-//A = P * D * tP with A symmetric
-//A is considered invertible
+//A = P * D * tP with A symmetric and D=diag(eigenvalue_list)
 //Parameter P is optional
-//Return D
-owl_mxf32_2x2* owl_mxf32_2x2_diagonalize_sym(owl_mxf32_2x2* D, owl_mxf32_2x2* P, owl_mxf32_2x2 const* A);
+//Return eigenvalue_list
+float* owl_mxf32_2x2_diagonalize_sym(float* eigenvalue_list, owl_mxf32_2x2* P, owl_mxf32_2x2 const* A);
 
 #endif // OWL_MXF32_2X2_H_INCLUDED

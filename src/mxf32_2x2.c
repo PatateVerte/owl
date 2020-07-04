@@ -48,18 +48,18 @@ owl_mxf32_2x2* owl_mxf32_2x2_Inv(owl_mxf32_2x2* M, owl_mxf32_2x2 const* A)
     return M;
 }
 
-//A = P * D * tP with A symmetric
-//A is considered invertible
+//A = P * D * tP with A symmetric and D=diag(eigenvalue_list)
 //Parameter P is optional
-//Return D
-owl_mxf32_2x2* owl_mxf32_2x2_diagonalize_sym(owl_mxf32_2x2* D, owl_mxf32_2x2* P, owl_mxf32_2x2 const* A)
+//Return eigenvalue_list
+float* owl_mxf32_2x2_diagonalize_sym(float* eigenvalue_list, owl_mxf32_2x2* P, owl_mxf32_2x2 const* A)
 {
     //Detection of diagonal matrix
     float const non_diag_term = _mm_cvtss_f32( _mm_insert_ps(*A, *A, 0b01001110) );
 
     if(non_diag_term == 0.0)
     {
-        *D = _mm_insert_ps(*A, *A, 0b00000110);
+        eigenvalue_list[0] = _mm_cvtss_f32(_mm_insert_ps(*A, *A, 0b00001110));
+        eigenvalue_list[1] = _mm_cvtss_f32(_mm_insert_ps(*A, *A, 0b11001110));
 
         if(P != NULL)
         {
@@ -68,7 +68,7 @@ owl_mxf32_2x2* owl_mxf32_2x2_diagonalize_sym(owl_mxf32_2x2* D, owl_mxf32_2x2* P,
     }
     else
     {
-        float vp_max;
+        float dominant_eigenvalue;
         {
             float flat_A[4] OWL_ALIGN16;
             owl_mxf32_2x2_store(flat_A, A);
@@ -77,16 +77,16 @@ owl_mxf32_2x2* owl_mxf32_2x2_diagonalize_sym(owl_mxf32_2x2* D, owl_mxf32_2x2* P,
 
             if(flat_A[0] + flat_A[3] >= 0.0)
             {
-                vp_max = 0.5 * ((flat_A[0] + flat_A[3]) + sqrtf(delta));
+                dominant_eigenvalue = 0.5 * ((flat_A[0] + flat_A[3]) + sqrtf(delta));
             }
             else
             {
-                vp_max = 0.5 * ((flat_A[0] + flat_A[3]) - sqrtf(delta));
+                dominant_eigenvalue = 0.5 * ((flat_A[0] + flat_A[3]) - sqrtf(delta));
             }
         }
 
         owl_mxf32_2x2 H;
-        owl_mxf32_2x2_diag(&H, vp_max);
+        owl_mxf32_2x2_diag(&H, dominant_eigenvalue);
         owl_mxf32_2x2_sub(&H, A, &H);
 
         float a, b;
@@ -133,10 +133,8 @@ owl_mxf32_2x2* owl_mxf32_2x2_diagonalize_sym(owl_mxf32_2x2* D, owl_mxf32_2x2* P,
         owl_mxf32_2x2 M;
         owl_mxf32_2x2_mul(&M, A, &P_);
 
-        *D = _mm_or_ps(
-                        _mm_set_ss(vp_max),
-                        _mm_dp_ps(M, P_, 0b11001000)
-                       );
+        eigenvalue_list[0] = dominant_eigenvalue;
+        eigenvalue_list[1] = _mm_cvtss_f32(_mm_dp_ps(M, P_, 0b11000001));
 
         if(P != NULL)
         {
@@ -144,5 +142,5 @@ owl_mxf32_2x2* owl_mxf32_2x2_diagonalize_sym(owl_mxf32_2x2* D, owl_mxf32_2x2* P,
         }
     }
 
-    return D;
+    return eigenvalue_list;
 }

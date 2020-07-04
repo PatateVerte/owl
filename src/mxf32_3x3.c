@@ -267,99 +267,65 @@ float owl_mxf32_3x3_sym_dominant_eigenvalue(owl_v3f32* eigenvector_ptr, owl_mxf3
 //A = P * D * tP
 //
 //
-owl_mxf32_3x3* owl_mxf32_3x3_sym_diagonalize(owl_mxf32_3x3* D, owl_mxf32_3x3* P, owl_mxf32_3x3 const* A)
+float* owl_mxf32_3x3_sym_diagonalize(float* eigenvalue_list, owl_mxf32_3x3* P, owl_mxf32_3x3 const* A)
 {
-    #define diag_nb_iter 25
+    //Computes an eigenvector associated with the dominant eigenvalue
+    owl_v3f32 V0;
+    eigenvalue_list[0] = owl_mxf32_3x3_sym_dominant_eigenvalue(&V0, A);
 
-    float non_diag_term = 0.0;
+    owl_mxf32_3x3 B;
+    owl_mxf32_3x3_diag(&B, 1.0);
+
+    owl_v3f32 B_sev[2];
     {
-        owl_mxf32_3x3 A_without_diag;
-        A_without_diag.column[0] = owl_v3f32_unsafe_set_component(A->column[0], 0, 0.0);
-        A_without_diag.column[1] = owl_v3f32_unsafe_set_component(A->column[1], 1, 0.0);
-        A_without_diag.column[2] = owl_v3f32_unsafe_set_component(A->column[2], 2, 0.0);
-        non_diag_term = owl_mxf32_3x3_norm2(&A_without_diag);
+        if( owl_v3f32_unsafe_get_component(V0, 0) < owl_v3f32_unsafe_get_component(V0, 1) )
+        {
+            B_sev[0] = owl_v3f32_cross(B.column[0], V0);
+        }
+        else
+        {
+            B_sev[0] = owl_v3f32_cross(B.column[1], V0);
+        }
+
+        B_sev[0] = owl_v3f32_normalize(B_sev[0]);
+        B_sev[1] = owl_v3f32_cross(V0, B_sev[0]);
     }
 
-    if(non_diag_term == 0.0)
+    float flat_As[4] OWL_ALIGN16;
     {
-        owl_mxf32_3x3_copy(D, A);
-
-        if(P != NULL)
+        owl_v3f32 Im_Bs[2] =
         {
-            owl_mxf32_3x3_diag(P, 1.0);
-        }
-    }
-    else
-    {
+            owl_mxf32_3x3_transform(A, B_sev[0]),
+            owl_mxf32_3x3_transform(A, B_sev[1])
+        };
 
-        //Computes an eigenvector associated with vp_max
-        owl_v3f32 V0;
-        float vp_max = owl_mxf32_3x3_sym_dominant_eigenvalue(&V0, A);
-
-        owl_mxf32_3x3 B;
-        owl_mxf32_3x3_diag(&B, 1.0);
-
-        owl_v3f32 B_sev[2];
-        {
-            if( owl_v3f32_unsafe_get_component(V0, 0) < owl_v3f32_unsafe_get_component(V0, 1) )
-            {
-                B_sev[0] = owl_v3f32_cross(B.column[0], V0);
-            }
-            else
-            {
-                B_sev[0] = owl_v3f32_cross(B.column[1], V0);
-            }
-
-            B_sev[0] = owl_v3f32_normalize(B_sev[0]);
-            B_sev[1] = owl_v3f32_cross(V0, B_sev[0]);
-        }
-
-        float flat_As[4] OWL_ALIGN16;
-        {
-            owl_v3f32 Im_Bs[2] =
-            {
-                owl_mxf32_3x3_transform(A, B_sev[0]),
-                owl_mxf32_3x3_transform(A, B_sev[1])
-            };
-
-            flat_As[0] = owl_v3f32_dot(Im_Bs[0], B_sev[0]);
-            flat_As[1] = owl_v3f32_dot(Im_Bs[0], B_sev[1]);
-            flat_As[2] = flat_As[1];
-            flat_As[3] = owl_v3f32_dot(Im_Bs[1], B_sev[1]);
-        }
-
-        owl_mxf32_2x2 As;
-        owl_mxf32_2x2_load(&As, flat_As);
-
-        owl_mxf32_2x2 Ps;
-        owl_mxf32_2x2 Ds;
-        owl_mxf32_2x2_diagonalize_sym(&Ds, &Ps, &As);
-
-        float flat_Ds[4] OWL_ALIGN16;
-        owl_mxf32_2x2_store(flat_Ds, &Ds);
-
-        D->column[0] = owl_v3f32_scalar_mul(B.column[0], vp_max);
-        D->column[1] = owl_v3f32_scalar_mul(B.column[1], flat_Ds[0]);
-        D->column[2] = owl_v3f32_scalar_mul(B.column[2], flat_Ds[3]);
-
-        if(P != NULL)
-        {
-            float flat_Ps[4] OWL_ALIGN16;
-            owl_mxf32_2x2_store(flat_Ps, &Ps);
-
-            P->column[0] = V0;
-            P->column[1] = owl_v3f32_add_scalar_mul(
-                                                        owl_v3f32_scalar_mul(B_sev[0], flat_Ps[0]),
-                                                        B_sev[1], flat_Ps[1]
-                                                    );
-            P->column[2] = owl_v3f32_add_scalar_mul(
-                                                        owl_v3f32_scalar_mul(B_sev[0], flat_Ps[2]),
-                                                        B_sev[1], flat_Ps[3]
-                                                    );
-        }
+        flat_As[0] = owl_v3f32_dot(Im_Bs[0], B_sev[0]);
+        flat_As[1] = owl_v3f32_dot(Im_Bs[0], B_sev[1]);
+        flat_As[2] = flat_As[1];
+        flat_As[3] = owl_v3f32_dot(Im_Bs[1], B_sev[1]);
     }
 
-    return D;
+    owl_mxf32_2x2 As;
+    owl_mxf32_2x2_load(&As, flat_As);
 
-    #undef diag_nb_iter
+    owl_mxf32_2x2 Ps;
+    owl_mxf32_2x2_diagonalize_sym(eigenvalue_list + 1, &Ps, &As);
+
+    if(P != NULL)
+    {
+        float flat_Ps[4] OWL_ALIGN16;
+        owl_mxf32_2x2_store(flat_Ps, &Ps);
+
+        P->column[0] = V0;
+        P->column[1] = owl_v3f32_add_scalar_mul(
+                                                    owl_v3f32_scalar_mul(B_sev[0], flat_Ps[0]),
+                                                    B_sev[1], flat_Ps[1]
+                                                );
+        P->column[2] = owl_v3f32_add_scalar_mul(
+                                                    owl_v3f32_scalar_mul(B_sev[0], flat_Ps[2]),
+                                                    B_sev[1], flat_Ps[3]
+                                                );
+    }
+
+    return eigenvalue_list;
 }

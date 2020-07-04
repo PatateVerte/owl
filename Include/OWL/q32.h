@@ -3,6 +3,7 @@
 
 #include <OWL/owl.h>
 #include <OWL/v3f32.h>
+#include <OWL/mxf32_3x3.h>
 
 #include <xmmintrin.h>
 #include <pmmintrin.h>
@@ -129,6 +130,9 @@ owl_q32 owl_q32_rotation(owl_v3f32 v, float alpha);
 //|q| = 1
 //(q) * u * (q^-1)
 owl_v3f32 owl_q32_transform_v3f32(owl_q32 q, owl_v3f32 u);
+
+//Transform a rotation matrix to a quaternion
+owl_q32 owl_q32_from_rotation_matrix(owl_mxf32_3x3 const* O);
 
 
 #endif // OWL_Q32_H_INCLUDED
