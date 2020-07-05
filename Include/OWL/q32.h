@@ -125,7 +125,7 @@ owl_q32 owl_q32_mul(owl_q32 q1, owl_q32 q2);
 
 //||v|| = 1
 //Rotation of alpha around the unitary vector v
-owl_q32 owl_q32_rotation(owl_v3f32 v, float alpha);
+owl_q32 owl_q32_from_rotation(owl_v3f32 v, float alpha);
 
 //|q| = 1
 //(q) * u * (q^-1)

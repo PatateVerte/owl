@@ -36,13 +36,13 @@ static inline owl_v3f32 owl_v3f32_set(float x, float y, float z)
 //Vector from a float[4]
 static inline owl_v3f32 owl_v3f32_load4(const float* src)
 {
-    return _mm_load_ps(src);
+    return _mm_loadu_ps(src);
 }
 
 //Vector to float[4]
 static inline float* owl_v3f32_store4(float* dst, owl_v3f32 v)
 {
-    _mm_store_ps(dst, v);
+    _mm_storeu_ps(dst, v);
     return dst;
 }
 

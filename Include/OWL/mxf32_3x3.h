@@ -96,6 +96,7 @@ float owl_mxf32_3x3_sym_dominant_eigenvalue(owl_v3f32* eigenvector_ptr, owl_mxf3
 
 //A = P * D * tP with A symmetric and D=diag(eigenvalue_list)
 //Parameter P is optional
+//P is an orthogonal direct base of R^3
 //Return eigenvalue_list
 float* owl_mxf32_3x3_sym_diagonalize(float* eigenvalue_list, owl_mxf32_3x3* P, owl_mxf32_3x3 const* A);
 

@@ -7,6 +7,7 @@
 #include <smmintrin.h>
 #include <immintrin.h>
 
+//store as followed : (a00, a10, a01, a11)
 typedef __m128 owl_mxf32_2x2;
 
 //M = 0
@@ -24,6 +25,13 @@ static inline owl_mxf32_2x2* owl_mxf32_2x2_diag(owl_mxf32_2x2* M, float diag_val
     tmp = _mm_shuffle_ps(tmp, tmp, 0b00111100);
     *M = tmp;
 
+    return M;
+}
+
+//M is given by column
+static inline owl_mxf32_2x2* owl_mxf32_2x2_set(owl_mxf32_2x2* M, float a00, float a10, float a01, float a11)
+{
+    *M = _mm_set_ps(a11, a01, a10, a00);
     return M;
 }
 
@@ -151,6 +159,7 @@ owl_mxf32_2x2* owl_mxf32_2x2_Inv(owl_mxf32_2x2* M, owl_mxf32_2x2 const* A);
 
 //A = P * D * tP with A symmetric and D=diag(eigenvalue_list)
 //Parameter P is optional
+//P is an orthogonal direct base of R^2
 //Return eigenvalue_list
 float* owl_mxf32_2x2_diagonalize_sym(float* eigenvalue_list, owl_mxf32_2x2* P, owl_mxf32_2x2 const* A);
 

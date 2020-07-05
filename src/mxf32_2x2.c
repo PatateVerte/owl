@@ -122,13 +122,8 @@ float* owl_mxf32_2x2_diagonalize_sym(float* eigenvalue_list, owl_mxf32_2x2* P, o
         x *= inv_norm;
         y *= inv_norm;
 
-        float flat_P[4] OWL_ALIGN16;
         owl_mxf32_2x2 P_;
-        flat_P[0] = x;
-        flat_P[1] = y;
-        flat_P[2] = -y;
-        flat_P[3] = x;
-        owl_mxf32_2x2_load(&P_, flat_P);
+        owl_mxf32_2x2_set(&P_, x, y, -y, x);
 
         owl_mxf32_2x2 M;
         owl_mxf32_2x2_mul(&M, A, &P_);
