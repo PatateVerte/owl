@@ -291,7 +291,7 @@ float* owl_mxf32_3x3_sym_diagonalize(float* eigenvalue_list, owl_mxf32_3x3* P, o
         B_sev[1] = owl_v3f32_cross(V0, B_sev[0]);
     }
 
-    float flat_As[4] OWL_ALIGN16;
+    owl_mxf32_2x2 As;
     {
         owl_v3f32 Im_Bs[2] =
         {
@@ -299,14 +299,14 @@ float* owl_mxf32_3x3_sym_diagonalize(float* eigenvalue_list, owl_mxf32_3x3* P, o
             owl_mxf32_3x3_transform_v3f32(A, B_sev[1])
         };
 
-        flat_As[0] = owl_v3f32_dot(Im_Bs[0], B_sev[0]);
-        flat_As[1] = owl_v3f32_dot(Im_Bs[0], B_sev[1]);
-        flat_As[2] = flat_As[1];
-        flat_As[3] = owl_v3f32_dot(Im_Bs[1], B_sev[1]);
+        owl_mxf32_2x2_set(
+                            &As,
+                            owl_v3f32_dot(Im_Bs[0], B_sev[0]),
+                            owl_v3f32_dot(Im_Bs[0], B_sev[1]),
+                            owl_v3f32_dot(Im_Bs[0], B_sev[1]),
+                            owl_v3f32_dot(Im_Bs[1], B_sev[1])
+                          );
     }
-
-    owl_mxf32_2x2 As;
-    owl_mxf32_2x2_load(&As, flat_As);
 
     owl_mxf32_2x2 Ps;
     owl_mxf32_2x2_diagonalize_sym(eigenvalue_list + 1, &Ps, &As);
