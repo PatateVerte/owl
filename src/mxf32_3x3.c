@@ -106,14 +106,14 @@ owl_v3f32 owl_mxf32_3x3_transform_v3f32(owl_mxf32_3x3 const* A, owl_v3f32 v)
 {
     owl_v3f32 vr = owl_v3f32_zero();
 
-    vr = owl_v3f32_filter_apply(owl_v3f32_unsafe_broadcast_comp(v, 0), A->column[0]);
+    vr = owl_v3f32_comp_mul(owl_v3f32_unsafe_broadcast_comp(v, 0), A->column[0]);
     vr = owl_v3f32_add(
                         vr,
-                        owl_v3f32_filter_apply(owl_v3f32_unsafe_broadcast_comp(v, 1), A->column[1])
+                        owl_v3f32_comp_mul(owl_v3f32_unsafe_broadcast_comp(v, 1), A->column[1])
                        );
     vr = owl_v3f32_add(
                         vr,
-                        owl_v3f32_filter_apply(owl_v3f32_unsafe_broadcast_comp(v, 2), A->column[2])
+                        owl_v3f32_comp_mul(owl_v3f32_unsafe_broadcast_comp(v, 2), A->column[2])
                        );
 
     return vr;
