@@ -96,6 +96,13 @@ static inline owl_v3f32 owl_v3f32_comp_mul(owl_v3f32 v1, owl_v3f32 v2)
     return _mm_mul_ps(v1, v2);
 }
 
+//Component by component div
+static inline owl_v3f32 owl_v3f32_comp_div(owl_v3f32 v1, owl_v3f32 v2)
+{
+    owl_v3f32 v = _mm_div_ps(v1, v2);
+    return _mm_insert_ps(v, v, 0b00001000);
+}
+
 //v / a
 static inline owl_v3f32 owl_v3f32_scalar_div(owl_v3f32 v, float a)
 {
