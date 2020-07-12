@@ -57,6 +57,16 @@ static inline owl_v3f32* owl_v3f32_base_xyz(owl_v3f32* base, float f)
     return base;
 }
 
+//Fill base[3] with fx, fy, fz
+static inline owl_v3f32* owl_v3f32_setbase_xyz(owl_v3f32* base, float fx, float fy, float fz)
+{
+    base[0] = _mm_insert_ps(_mm_set_ss(fx), _mm_set_ss(fx), 0b00001110);
+    base[1] = _mm_insert_ps(_mm_set_ss(fy), _mm_set_ss(fy), 0b00011101);
+    base[2] = _mm_insert_ps(_mm_set_ss(fz), _mm_set_ss(fz), 0b00101011);
+
+    return base;
+}
+
 //Broadcast f within a vector
 static inline owl_v3f32 owl_v3f32_broadcast(float f)
 {

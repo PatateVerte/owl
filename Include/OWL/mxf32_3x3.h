@@ -34,6 +34,9 @@ static inline owl_mxf32_3x3* owl_mxf32_3x3_zero(owl_mxf32_3x3* M)
 owl_mxf32_3x3* owl_mxf32_3x3_diag(owl_mxf32_3x3* M, float diag_val);
 
 //
+owl_mxf32_3x3* owl_mxf32_3x3_setdiag(owl_mxf32_3x3* M, float f0, float f1, float f2);
+
+//
 float owl_mxf32_3x3_get_element(owl_mxf32_3x3* M, unsigned int i, unsigned int j);
 
 //
