@@ -201,7 +201,7 @@ owl_mxf32_3x3* owl_mxf32_3x3_Inv(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A)
 float owl_mxf32_3x3_sym_dominant_eigenvalue(owl_v3f32* eigenvector_ptr, owl_mxf32_3x3 const* A)
 {
     float const delta = 1.0 / ((float)(1<<24));
-    float const eps = delta / (2.0 * sqrtf(3.0));
+    float const eps = delta / (2.0 * OWL_SQRT3);
     float const sqrt_eps = sqrtf(eps);
     float const f_sqrt_eps = 2.0 * sqrt_eps / ((1.0 + sqrt_eps) * (1.0 + sqrt_eps));
 

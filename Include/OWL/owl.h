@@ -3,6 +3,8 @@
 
 #define OWL_ALIGN16 __attribute__( (aligned(16)) )
 
+#define OWL_SQRT3   1.73205080756887729352
+
 typedef enum
 {
     OWL_SUCCESS,
