@@ -1,4 +1,4 @@
-#include <OWL/v3f32.h>
+#include <OWL/Optimized3d/vector/v3f32.h>
 
 //Infinity norm
 //

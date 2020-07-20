@@ -1,4 +1,4 @@
-#include <OWL/mxf32_mxn.h>
+#include <OWL/LinearAlgebra/matrix/mxf32_mxn.h>
 
 owl_Mxf32_mxn* owl_Mxf32_mxn_Create(unsigned int m, unsigned int n, owl_error* ret_error, owl_error const* pass_through_error)
 {
@@ -15,12 +15,12 @@ owl_Mxf32_mxn* owl_Mxf32_mxn_Create(unsigned int m, unsigned int n, owl_error* r
             M->column = malloc(n * sizeof(*M->column));
             if(n == 0 || M->column != NULL)
             {
-                for(int j = 0 ; j < n ; j++)
+                for(unsigned int j = 0 ; j < n ; j++)
                 {
                     M->column[j] = NULL;
                 }
 
-                for(int j = 0 ; j < n && error == OWL_SUCCESS ; j++)
+                for(unsigned int j = 0 ; j < n && error == OWL_SUCCESS ; j++)
                 {
                     M->column[j] = owl_Vnf32_Create(m, &error, &error);
                 }

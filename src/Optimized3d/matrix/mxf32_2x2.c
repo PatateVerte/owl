@@ -1,4 +1,4 @@
-#include <OWL/mxf32_2x2.h>
+#include <OWL/Optimized3d/matrix/mxf32_2x2.h>
 
 #include <OWL/owl.h>
 

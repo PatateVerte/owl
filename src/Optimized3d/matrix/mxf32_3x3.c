@@ -1,5 +1,5 @@
-#include <OWL/mxf32_3x3.h>
-#include <OWL/mxf32_2x2.h>
+#include <OWL/Optimized3d/matrix/mxf32_3x3.h>
+#include <OWL/Optimized3d/matrix/mxf32_2x2.h>
 
 #include <math.h>
 

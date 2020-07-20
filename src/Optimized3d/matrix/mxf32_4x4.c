@@ -1,4 +1,4 @@
-#include <OWL/mxf32_4x4.h>
+#include <OWL/Optimized3d/matrix/mxf32_4x4.h>
 
 owl_mxf32_4x4* owl_mxf32_4x4_zero(owl_mxf32_4x4* M)
 {

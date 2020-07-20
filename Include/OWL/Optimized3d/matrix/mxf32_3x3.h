@@ -2,7 +2,7 @@
 #define OWL_MXF32_3X3_H_INCLUDED
 
 #include <OWL/owl.h>
-#include <OWL/v3f32.h>
+#include <OWL/Optimized3d/vector/v3f32.h>
 
 //SSE / 128-bits AVX
 #include <xmmintrin.h>

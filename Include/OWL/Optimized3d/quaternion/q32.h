@@ -2,8 +2,8 @@
 #define OWL_Q32_H_INCLUDED
 
 #include <OWL/owl.h>
-#include <OWL/v3f32.h>
-#include <OWL/mxf32_3x3.h>
+#include <OWL/Optimized3d/vector/v3f32.h>
+#include <OWL/Optimized3d/matrix/mxf32_3x3.h>
 
 #include <xmmintrin.h>
 #include <pmmintrin.h>

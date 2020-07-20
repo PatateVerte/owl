@@ -1,4 +1,4 @@
-#include <OWL/taylor_series_f32.h>
+#include <OWL/FunctionManipulation/taylor_series/taylor_series_f32.h>
 
 #include <stdlib.h>
 #include <math.h>

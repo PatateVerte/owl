@@ -1,4 +1,4 @@
-#include <OWL/vnf32.h>
+#include <OWL/LinearAlgebra/vector/vnf32.h>
 
 #include <stdlib.h>
 #include <malloc.h>
@@ -335,7 +335,7 @@ owl_Vnf32* owl_Vnf32_AddScalarMul(owl_Vnf32* Vf, owl_Vnf32 const* V1, owl_Vnf32 
 //Vf = (V1[0] * V2[0], V1[1] * V2[1], ... , V1[n-1] * V2[n-1])
 //
 //
-owl_Vnf32* owl_Vnf32_Mul(owl_Vnf32* Vf, owl_Vnf32 const* V1, owl_Vnf32 const* V2, float a, owl_error* ret_error, owl_error const* pass_through_error)
+owl_Vnf32* owl_Vnf32_Mul(owl_Vnf32* Vf, owl_Vnf32 const* V1, owl_Vnf32 const* V2, owl_error* ret_error, owl_error const* pass_through_error)
 {
     owl_error error = OWL_SUCCESS;
 

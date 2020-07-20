@@ -1,4 +1,4 @@
-#include <OWL/polynomial_f32.h>
+#include <OWL/FunctionManipulation/polynomial/polynomial_f32.h>
 
 #include <math.h>
 #include <stdlib.h>

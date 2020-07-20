@@ -3,7 +3,7 @@
 
 #include <OWL/owl.h>
 
-#include <OWL/vnf32.h>
+#include <OWL/LinearAlgebra/vector/vnf32.h>
 
 typedef struct
 {

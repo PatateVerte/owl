@@ -51,7 +51,7 @@ owl_Vnf32* owl_Vnf32_Sub(owl_Vnf32* Vf, owl_Vnf32 const* V1, owl_Vnf32 const* V2
 owl_Vnf32* owl_Vnf32_AddScalarMul(owl_Vnf32* Vf, owl_Vnf32 const* V1, owl_Vnf32 const* V2, float a, owl_error* ret_error, owl_error const* pass_through_error);
 
 //Vf = (V1[0] * V2[0], V1[1] * V2[1], ... , V1[n-1] * V2[n-1])
-owl_Vnf32* owl_Vnf32_Mul(owl_Vnf32* Vf, owl_Vnf32 const* V1, owl_Vnf32 const* V2, float a, owl_error* ret_error, owl_error const* pass_through_error);
+owl_Vnf32* owl_Vnf32_Mul(owl_Vnf32* Vf, owl_Vnf32 const* V1, owl_Vnf32 const* V2, owl_error* ret_error, owl_error const* pass_through_error);
 
 //Dot product
 float owl_Vnf32_Dot(owl_Vnf32 const* V1, owl_Vnf32 const* V2, owl_error* ret_error, owl_error const* pass_through_error);

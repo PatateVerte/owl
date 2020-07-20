@@ -1,4 +1,4 @@
-#include <OWL/q32.h>
+#include <OWL/Optimized3d/quaternion/q32.h>
 
 #include <math.h>
 
