@@ -36,7 +36,7 @@ owl_mxf32_2x2* owl_mxf32_2x2_set_element(owl_mxf32_2x2* M, float value, unsigned
 //
 owl_mxf32_2x2* owl_mxf32_2x2_Inv(owl_mxf32_2x2* M, owl_mxf32_2x2 const* A)
 {
-    __m128 broadcast_inv_det = _mm_set1_ps( 1.0 / owl_mxf32_2x2_det(A) );
+    __m128 broadcast_inv_det = _mm_set1_ps( 1.0f / owl_mxf32_2x2_det(A) );
 
     __m128 tmp = _mm_shuffle_ps(*A, *A, 0b11100001);
     tmp = _mm_addsub_ps(
@@ -56,7 +56,7 @@ float* owl_mxf32_2x2_diagonalize_sym(float* eigenvalue_list, owl_mxf32_2x2* P, o
     //Detection of diagonal matrix
     float const non_diag_term = _mm_cvtss_f32( _mm_insert_ps(*A, *A, 0b01001110) );
 
-    if(non_diag_term == 0.0)
+    if(non_diag_term == 0.0f)
     {
         eigenvalue_list[0] = _mm_cvtss_f32(_mm_insert_ps(*A, *A, 0b00001110));
         eigenvalue_list[1] = _mm_cvtss_f32(_mm_insert_ps(*A, *A, 0b11001110));
@@ -75,13 +75,13 @@ float* owl_mxf32_2x2_diagonalize_sym(float* eigenvalue_list, owl_mxf32_2x2* P, o
 
             float const delta = (flat_A[0] - flat_A[3]) * (flat_A[0] - flat_A[3]) + 4 * flat_A[1] * flat_A[1];
 
-            if(flat_A[0] + flat_A[3] >= 0.0)
+            if(flat_A[0] + flat_A[3] >= 0.0f)
             {
-                dominant_eigenvalue = 0.5 * ((flat_A[0] + flat_A[3]) + sqrtf(delta));
+                dominant_eigenvalue = 0.5f * ((flat_A[0] + flat_A[3]) + sqrtf(delta));
             }
             else
             {
-                dominant_eigenvalue = 0.5 * ((flat_A[0] + flat_A[3]) - sqrtf(delta));
+                dominant_eigenvalue = 0.5f * ((flat_A[0] + flat_A[3]) - sqrtf(delta));
             }
         }
 
@@ -109,16 +109,16 @@ float* owl_mxf32_2x2_diagonalize_sym(float* eigenvalue_list, owl_mxf32_2x2* P, o
         float x, y;
         if(fabsf(a) < fabsf(b))
         {
-            x = 1.0;
+            x = 1.0f;
             y = - a / b;
         }
         else
         {
-            y = 1.0;
+            y = 1.0f;
             x = - b / a;
         }
 
-        float inv_norm = 1.0 / sqrtf(x*x + y*y);
+        float inv_norm = 1.0f / sqrtf(x*x + y*y);
         x *= inv_norm;
         y *= inv_norm;
 

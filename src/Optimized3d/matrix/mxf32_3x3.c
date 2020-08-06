@@ -112,7 +112,7 @@ owl_mxf32_3x3* owl_mxf32_3x3_transp(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A)
 //A * v
 //
 //
-owl_v3f32 owl_mxf32_3x3_transform_v3f32(owl_mxf32_3x3 const* A, owl_v3f32 v)
+owl_v3f32 OWL_VECTORCALL owl_mxf32_3x3_transform_v3f32(owl_mxf32_3x3 const* A, owl_v3f32 v)
 {
     owl_v3f32 vr = owl_v3f32_zero();
 
@@ -183,7 +183,7 @@ float owl_mxf32_3x3_norminf(owl_mxf32_3x3 const* A)
 //
 owl_mxf32_3x3* owl_mxf32_3x3_Inv(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A)
 {
-    float inv_det = 1.0 / owl_mxf32_3x3_det(A);
+    float inv_det = 1.0f / owl_mxf32_3x3_det(A);
     owl_mxf32_3x3 inv_det_comA;
 
     for(int j = 0 ; j < 3 ; j++)
@@ -200,12 +200,12 @@ owl_mxf32_3x3* owl_mxf32_3x3_Inv(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A)
 //
 float owl_mxf32_3x3_sym_dominant_eigenvalue(owl_v3f32* eigenvector_ptr, owl_mxf32_3x3 const* A)
 {
-    float const delta = 1.0 / ((float)(1<<24));
-    float const eps = delta / (2.0 * OWL_SQRT3);
+    float const delta = 1.0f / ((float)(1<<24));
+    float const eps = delta / (2.0f * (float)OWL_SQRT3);
     float const sqrt_eps = sqrtf(eps);
-    float const f_sqrt_eps = 2.0 * sqrt_eps / ((1.0 + sqrt_eps) * (1.0 + sqrt_eps));
+    float const f_sqrt_eps = 2.0f * sqrt_eps / ((1.0f + sqrt_eps) * (1.0f + sqrt_eps));
 
-    float eigenvalue = 0.0;
+    float eigenvalue = 0.0f;
     owl_v3f32 eigenvector = owl_v3f32_zero();
 
     unsigned int k = 1;
@@ -215,21 +215,21 @@ float owl_mxf32_3x3_sym_dominant_eigenvalue(owl_v3f32* eigenvector_ptr, owl_mxf3
     owl_mxf32_3x3_copy(&Ak, &A1);
     float Tr = owl_mxf32_3x3_trace(&Ak);
 
-    if(Tr > 0.0)
+    if(Tr > 0.0f)
     {
         do
         {
-            owl_mxf32_3x3_scalar_mul(&Ak, &Ak, 1.0 / Tr);
+            owl_mxf32_3x3_scalar_mul(&Ak, &Ak, 1.0f / Tr);
             owl_mxf32_3x3_mul(&Ak, &Ak, &Ak);
             Tr = owl_mxf32_3x3_trace(&Ak);
 
             k++;
 
-        } while(k <= 27 && Tr > 0.0 && 1.0 - Tr > f_sqrt_eps);
+        } while(k <= 27 && Tr > 0.0f && 1.0f - Tr > f_sqrt_eps);
     }
 
-    float square_norm = 0.0;
-    owl_v3f32 k_eigenvector;
+    float square_norm = 0.0f;
+    owl_v3f32 k_eigenvector = owl_v3f32_zero();
     for(unsigned int i = 0 ; i < 3 ; i++)
     {
         owl_v3f32 v = Ak.column[i];
@@ -242,7 +242,7 @@ float owl_mxf32_3x3_sym_dominant_eigenvalue(owl_v3f32* eigenvector_ptr, owl_mxf3
     }
 
 
-    if(square_norm > 0.0)
+    if(square_norm > 0.0f)
     {
         owl_v3f32 A1_k_eigenvector = owl_mxf32_3x3_transform_v3f32(&A1, k_eigenvector);
         float abs_eigenvalue = sqrtf(owl_v3f32_dot(k_eigenvector, A1_k_eigenvector) / square_norm);

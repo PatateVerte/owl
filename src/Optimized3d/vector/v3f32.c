@@ -3,7 +3,7 @@
 //Infinity norm
 //
 //
-float owl_v3f32_norminf(owl_v3f32 v)
+float OWL_VECTORCALL owl_v3f32_norminf(owl_v3f32 v)
 {
     __m128 v_abs = _mm_max_ps(
                                 v,
@@ -20,7 +20,7 @@ float owl_v3f32_norminf(owl_v3f32 v)
 //Sign mask in int[2:0]
 //0 : < 0
 //1 : >= 0
-int owl_v3f32_sign_mask(owl_v3f32 v)
+int OWL_VECTORCALL owl_v3f32_sign_mask(owl_v3f32 v)
 {
     __m128i tmp = _mm_castps_si128( _mm_cmpge_ps(v, _mm_setzero_ps()) );
     tmp = _mm_packs_epi32(tmp, tmp);

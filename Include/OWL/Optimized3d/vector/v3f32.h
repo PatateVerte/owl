@@ -9,6 +9,7 @@
 #include <xmmintrin.h>
 #include <pmmintrin.h>
 #include <smmintrin.h>
+#include <immintrin.h>
 
 /*
     V
@@ -74,6 +75,12 @@ static inline owl_v3f32 owl_v3f32_broadcast(float f)
     return _mm_shuffle_ps(tmp, tmp, 0b11000000);
 }
 
+//-a
+static inline owl_v3f32 owl_v3f32_negate(owl_v3f32 a)
+{
+    return _mm_sub_ps(_mm_setzero_ps(), a);
+}
+
 //a + b
 static inline owl_v3f32 owl_v3f32_add(owl_v3f32 a, owl_v3f32 b)
 {
@@ -122,10 +129,7 @@ static inline owl_v3f32 owl_v3f32_scalar_div(owl_v3f32 v, float a)
 //v1 + a*v2
 static inline owl_v3f32 owl_v3f32_add_scalar_mul(owl_v3f32 v1, owl_v3f32 v2, float a)
 {
-    return _mm_add_ps(
-                        v1,
-                        _mm_mul_ps( _mm_set1_ps(a), v2 )
-                      );
+    return _mm_fmadd_ps(_mm_set1_ps(a), v2, v1);
 }
 
 //a.b
@@ -154,13 +158,18 @@ static inline owl_v3f32 owl_v3f32_cross(owl_v3f32 a, owl_v3f32 b)
                                 _mm_shuffle_ps(b, b, 0b11010010)
                             );
 
-    tmp = _mm_sub_ps(
+    /*tmp = _mm_sub_ps(
                      tmp,
                      _mm_mul_ps(
                                     _mm_shuffle_ps(a, a, 0b11010010),
                                     _mm_shuffle_ps(b, b, 0b11001001)
                                 )
-                    );
+                    );*/
+    tmp = _mm_fnmadd_ps(
+                            _mm_shuffle_ps(a, a, 0b11010010),
+                            _mm_shuffle_ps(b, b, 0b11001001),
+                            tmp
+                        );
 
     return tmp;
 }
@@ -178,12 +187,12 @@ static inline owl_v3f32 owl_v3f32_rotate_comp(owl_v3f32 v)
 }
 
 //Infinity norm
-float owl_v3f32_norminf(owl_v3f32 v);
+float OWL_VECTORCALL owl_v3f32_norminf(owl_v3f32 v);
 
 //Sign mask in int[2:0]
 //0 : < 0
 //1 : >= 0
-int owl_v3f32_sign_mask(owl_v3f32 v);
+int OWL_VECTORCALL owl_v3f32_sign_mask(owl_v3f32 v);
 
 //Broadcast a vector component into another vector
 #define owl_v3f32_unsafe_broadcast_comp(v, i) \
