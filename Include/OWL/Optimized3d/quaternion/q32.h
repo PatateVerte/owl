@@ -31,13 +31,13 @@ static inline owl_q32 owl_q32_from_real(float w)
 //Load quaternion
 static inline owl_q32 owl_q32_load4(float const* src)
 {
-    return _mm_load_ps(src);
+    return _mm_loadu_ps(src);
 }
 
 //Store quaternion
 static inline float* owl_q32_store4(float* dst, owl_q32 q)
 {
-    _mm_store_ps(dst, q);
+    _mm_storeu_ps(dst, q);
     return dst;
 }
 

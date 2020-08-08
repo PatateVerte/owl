@@ -4,6 +4,7 @@
 #define OWL_ALIGN16 __attribute__( (aligned(16)) )
 #define OWL_VECTORCALL __vectorcall
 
+#define OWL_SQRT2	1.41421356237309504880
 #define OWL_SQRT3   1.73205080756887729352
 #define OWL_PI		3.14159265358979323846
 
