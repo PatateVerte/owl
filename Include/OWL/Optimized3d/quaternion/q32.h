@@ -136,8 +136,8 @@ owl_v3f32 OWL_VECTORCALL owl_q32_transform_v3f32(owl_q32 q, owl_v3f32 u);
 owl_q32 owl_q32_from_rotation_matrix(owl_mxf32_3x3 const* O);
 
 //No-vectorcall version of previous functions
-owl_q32 owl_q32_ext_mul(owl_q32 q1, owl_q32 q2);
-owl_q32 owl_q32_ext_from_rotation(owl_v3f32 v, float alpha);
-owl_v3f32 owl_q32_ext_transform_v3f32(owl_q32 q, owl_v3f32 u);
+owl_q32 OWL_DLL_EXPORT owl_q32_ext_mul(owl_q32 q1, owl_q32 q2);
+owl_q32 OWL_DLL_EXPORT owl_q32_ext_from_rotation(owl_v3f32 v, float alpha);
+owl_v3f32 OWL_DLL_EXPORT owl_q32_ext_transform_v3f32(owl_q32 q, owl_v3f32 u);
 
 #endif // OWL_Q32_H_INCLUDED

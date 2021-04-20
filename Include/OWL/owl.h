@@ -1,8 +1,17 @@
 #ifndef OWL_H_INCLUDED
 #define OWL_H_INCLUDED
 
-#define OWL_ALIGN16 __attribute__( (aligned(16)) )
-#define OWL_VECTORCALL __vectorcall
+#ifdef OWL_MSVC_BUILD
+	#define OWL_ALIGN16 __declspec(align(16))
+	#define OWL_VECTORCALL __vectorcall
+
+	#define OWL_DLL_EXPORT __declspec(dllexport)
+#else
+	#define OWL_ALIGN16 __attribute__( (aligned(16)) )
+	#define OWL_VECTORCALL __vectorcall
+
+	#define OWL_DLL_EXPORT
+#endif
 
 #define OWL_SQRT2	1.41421356237309504880
 #define OWL_SQRT3   1.73205080756887729352
