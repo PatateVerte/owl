@@ -6,11 +6,13 @@
 	#define OWL_VECTORCALL __vectorcall
 
 	#define OWL_DLL_EXPORT __declspec(dllexport)
+	#define OWL_DLL_IMPORT __declspec(dllimport)
 #else
 	#define OWL_ALIGN16 __attribute__( (aligned(16)) )
 	#define OWL_VECTORCALL __vectorcall
 
 	#define OWL_DLL_EXPORT
+	#define OWL_DLL_IMPORT
 #endif
 
 #define OWL_SQRT2	1.41421356237309504880
