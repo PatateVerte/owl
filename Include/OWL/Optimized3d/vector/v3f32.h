@@ -187,12 +187,12 @@ static inline owl_v3f32 owl_v3f32_rotate_comp(owl_v3f32 v)
 }
 
 //Infinity norm
-float OWL_VECTORCALL owl_v3f32_norminf(owl_v3f32 v);
+float OWL_DLL_EXPORT OWL_VECTORCALL owl_v3f32_norminf(owl_v3f32 v);
 
 //Sign mask in int[2:0]
 //0 : < 0
 //1 : >= 0
-int OWL_VECTORCALL owl_v3f32_sign_mask(owl_v3f32 v);
+int OWL_DLL_EXPORT OWL_VECTORCALL owl_v3f32_sign_mask(owl_v3f32 v);
 
 //Broadcast a vector component into another vector
 #define owl_v3f32_unsafe_broadcast_comp(v, i) \

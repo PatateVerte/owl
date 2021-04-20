@@ -121,19 +121,19 @@ static inline owl_q32 owl_q32_inv(owl_q32 q)
 }
 
 //q1 * q2
-owl_q32 OWL_VECTORCALL owl_q32_mul(owl_q32 q1, owl_q32 q2);
+owl_q32 OWL_DLL_EXPORT OWL_VECTORCALL owl_q32_mul(owl_q32 q1, owl_q32 q2);
 
 //||v|| = 1
 //Rotation of alpha around the unitary vector v
 //||v|| can be null if alpha == 0
-owl_q32 OWL_VECTORCALL owl_q32_from_rotation(owl_v3f32 v, float alpha);
+owl_q32 OWL_DLL_EXPORT OWL_VECTORCALL owl_q32_from_rotation(owl_v3f32 v, float alpha);
 
 //|q| = 1
 //(q) * u * (q^-1)
-owl_v3f32 OWL_VECTORCALL owl_q32_transform_v3f32(owl_q32 q, owl_v3f32 u);
+owl_v3f32 OWL_DLL_EXPORT OWL_VECTORCALL owl_q32_transform_v3f32(owl_q32 q, owl_v3f32 u);
 
 //Transform a rotation matrix to a quaternion
-owl_q32 owl_q32_from_rotation_matrix(owl_mxf32_3x3 const* O);
+owl_q32 OWL_DLL_EXPORT owl_q32_from_rotation_matrix(owl_mxf32_3x3 const* O);
 
 //No-vectorcall version of previous functions
 owl_q32 OWL_DLL_EXPORT owl_q32_ext_mul(owl_q32 q1, owl_q32 q2);

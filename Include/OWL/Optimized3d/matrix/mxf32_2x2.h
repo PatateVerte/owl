@@ -1,6 +1,8 @@
 #ifndef OWL_MXF32_2X2_H_INCLUDED
 #define OWL_MXF32_2X2_H_INCLUDED
 
+#include <OWL/owl.h>
+
 //SSE / 128-bits AVX
 #include <xmmintrin.h>
 #include <pmmintrin.h>
@@ -50,10 +52,10 @@ static inline owl_mxf32_2x2* owl_mxf32_2x2_load(owl_mxf32_2x2* M, float const* s
 }
 
 //
-float owl_mxf32_2x2_get_element(owl_mxf32_2x2* M, unsigned int i, unsigned int j);
+float OWL_DLL_EXPORT owl_mxf32_2x2_get_element(owl_mxf32_2x2* M, unsigned int i, unsigned int j);
 
 //
-owl_mxf32_2x2* owl_mxf32_2x2_set_element(owl_mxf32_2x2* M, float value, unsigned int i, unsigned int j);
+owl_mxf32_2x2* OWL_DLL_EXPORT owl_mxf32_2x2_set_element(owl_mxf32_2x2* M, float value, unsigned int i, unsigned int j);
 
 //M = A + B
 static inline owl_mxf32_2x2* owl_mxf32_2x2_add(owl_mxf32_2x2* M, owl_mxf32_2x2 const* A, owl_mxf32_2x2 const* B)
@@ -155,12 +157,12 @@ static inline float owl_mxf32_2x2_det(owl_mxf32_2x2 const* A)
 }
 
 //M = A ^(-1)
-owl_mxf32_2x2* owl_mxf32_2x2_Inv(owl_mxf32_2x2* M, owl_mxf32_2x2 const* A);
+owl_mxf32_2x2* OWL_DLL_EXPORT owl_mxf32_2x2_Inv(owl_mxf32_2x2* M, owl_mxf32_2x2 const* A);
 
 //A = P * D * tP with A symmetric and D=diag(eigenvalue_list)
 //Parameter P is optional
 //P is an orthogonal direct base of R^2
 //Return eigenvalue_list
-float* owl_mxf32_2x2_diagonalize_sym(float* eigenvalue_list, owl_mxf32_2x2* P, owl_mxf32_2x2 const* A);
+float* OWL_DLL_EXPORT owl_mxf32_2x2_diagonalize_sym(float* eigenvalue_list, owl_mxf32_2x2* P, owl_mxf32_2x2 const* A);
 
 #endif // OWL_MXF32_2X2_H_INCLUDED

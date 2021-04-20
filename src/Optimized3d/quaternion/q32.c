@@ -43,7 +43,7 @@ owl_q32 OWL_VECTORCALL owl_q32_mul(owl_q32 q1, owl_q32 q2)
 //||v|| = 1
 //Rotation of alpha around the unitary vector v
 //
-owl_q32 OWL_VECTORCALL owl_q32_from_rotation(owl_v3f32 v, float alpha)
+owl_q32 OWL_DLL_EXPORT OWL_VECTORCALL owl_q32_from_rotation(owl_v3f32 v, float alpha)
 {
     float cos = cosf(0.5f * alpha);
     float sin = sinf(0.5f * alpha);
@@ -61,7 +61,7 @@ owl_q32 OWL_VECTORCALL owl_q32_from_rotation(owl_v3f32 v, float alpha)
 //|q| = 1
 //(q) * u * (q^-1)
 //
-owl_v3f32 OWL_VECTORCALL owl_q32_transform_v3f32(owl_q32 q, owl_v3f32 u)
+owl_v3f32 OWL_DLL_EXPORT OWL_VECTORCALL owl_q32_transform_v3f32(owl_q32 q, owl_v3f32 u)
 {
     float a = owl_q32_Ref(q);
     owl_v3f32 v = owl_q32_Imv(q);
@@ -85,7 +85,7 @@ owl_v3f32 OWL_VECTORCALL owl_q32_transform_v3f32(owl_q32 q, owl_v3f32 u)
 //Transform a rotation matrix to a quaternion
 //
 //
-owl_q32 owl_q32_from_rotation_matrix(owl_mxf32_3x3 const* O)
+owl_q32 OWL_DLL_EXPORT owl_q32_from_rotation_matrix(owl_mxf32_3x3 const* O)
 {
     //r = 0
     __m128 r = _mm_setzero_ps();
