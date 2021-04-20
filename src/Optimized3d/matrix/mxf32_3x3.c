@@ -31,7 +31,7 @@ float owl_mxf32_3x3_get_element(owl_mxf32_3x3* M, unsigned int i, unsigned int j
     unsigned int i_ = i % 3;
     unsigned int j_ = j % 3;
 
-    float flat_column[4] OWL_ALIGN16;
+    float OWL_ALIGN16 flat_column[4];
     owl_v3f32_store4(flat_column, M->column[j_]);
     return flat_column[i_];
 }
@@ -44,7 +44,7 @@ owl_mxf32_3x3* owl_mxf32_3x3_set_element(owl_mxf32_3x3* M, float value, unsigned
     unsigned int i_ = i % 3;
     unsigned int j_ = j % 3;
 
-    float flat_column[4] OWL_ALIGN16;
+    float OWL_ALIGN16 flat_column[4];
     owl_v3f32_store4(flat_column, M->column[j_]);
     flat_column[i_] = value;
     M->column[j_] = owl_v3f32_load4(flat_column);
@@ -303,11 +303,9 @@ float* owl_mxf32_3x3_sym_diagonalize(float* eigenvalue_list, owl_mxf32_3x3* P, o
 
     owl_mxf32_2x2 As;
     {
-        owl_v3f32 Im_Bs[2] =
-        {
-            owl_mxf32_3x3_transform_v3f32(A, B_sev[0]),
-            owl_mxf32_3x3_transform_v3f32(A, B_sev[1])
-        };
+        owl_v3f32 Im_Bs[2];
+        Im_Bs[0] = owl_mxf32_3x3_transform_v3f32(A, B_sev[0]);
+        Im_Bs[1] = owl_mxf32_3x3_transform_v3f32(A, B_sev[1]);
 
         owl_mxf32_2x2_set(
                             &As,
@@ -323,7 +321,7 @@ float* owl_mxf32_3x3_sym_diagonalize(float* eigenvalue_list, owl_mxf32_3x3* P, o
 
     if(P != NULL)
     {
-        float flat_Ps[4] OWL_ALIGN16;
+        float OWL_ALIGN16 flat_Ps[4];
         owl_mxf32_2x2_store(flat_Ps, &Ps);
 
         P->column[0] = V0;

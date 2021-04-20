@@ -11,11 +11,11 @@
 
 #include <string.h>
 
-typedef struct
+typedef struct OWL_ALIGN16
 {
     float data[16];
 
-} __attribute__( (aligned(16)) ) owl_mxf32_4x4;
+} owl_mxf32_4x4;
 
 //M = 0
 //Return M

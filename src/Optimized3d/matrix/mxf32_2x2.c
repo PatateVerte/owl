@@ -70,7 +70,7 @@ float* owl_mxf32_2x2_diagonalize_sym(float* eigenvalue_list, owl_mxf32_2x2* P, o
     {
         float dominant_eigenvalue;
         {
-            float flat_A[4] OWL_ALIGN16;
+            float OWL_ALIGN16 flat_A[4];
             owl_mxf32_2x2_store(flat_A, A);
 
             float const delta = (flat_A[0] - flat_A[3]) * (flat_A[0] - flat_A[3]) + 4 * flat_A[1] * flat_A[1];
@@ -93,7 +93,7 @@ float* owl_mxf32_2x2_diagonalize_sym(float* eigenvalue_list, owl_mxf32_2x2* P, o
 
         float n1 = _mm_cvtss_f32(_mm_dp_ps(H, H, 0b01010001));
         float n2 = _mm_cvtss_f32(_mm_dp_ps(H, H, 0b10100001));
-        float flat_H[4] OWL_ALIGN16;
+        float OWL_ALIGN16 flat_H[4];
         owl_mxf32_2x2_store(flat_H, &H);
         if(n1 >= n2)
         {
