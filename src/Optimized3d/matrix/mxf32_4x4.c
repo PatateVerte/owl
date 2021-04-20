@@ -1,6 +1,6 @@
 #include <OWL/Optimized3d/matrix/mxf32_4x4.h>
 
-owl_mxf32_4x4* OWL_DLL_EXPORT owl_mxf32_4x4_zero(owl_mxf32_4x4* M)
+OWL_DLL_EXPORT owl_mxf32_4x4* owl_mxf32_4x4_zero(owl_mxf32_4x4* M)
 {
     for(int j = 0 ; j < 4 ; j++)
     {
@@ -13,7 +13,7 @@ owl_mxf32_4x4* OWL_DLL_EXPORT owl_mxf32_4x4_zero(owl_mxf32_4x4* M)
 //
 //
 //
-owl_mxf32_4x4* OWL_DLL_EXPORT owl_mxf32_4x4_diag(owl_mxf32_4x4* M, float diag_val)
+OWL_DLL_EXPORT owl_mxf32_4x4* owl_mxf32_4x4_diag(owl_mxf32_4x4* M, float diag_val)
 {
     __m128 const diag_val_v = _mm_set_ss(diag_val);
 
@@ -28,7 +28,7 @@ owl_mxf32_4x4* OWL_DLL_EXPORT owl_mxf32_4x4_diag(owl_mxf32_4x4* M, float diag_va
 //M = A
 //
 //
-owl_mxf32_4x4* OWL_DLL_EXPORT owl_mxf32_4x4_copy(owl_mxf32_4x4* M, owl_mxf32_4x4 const* A)
+OWL_DLL_EXPORT owl_mxf32_4x4* owl_mxf32_4x4_copy(owl_mxf32_4x4* M, owl_mxf32_4x4 const* A)
 {
     for(int j = 0 ; j < 4 ; j++)
     {
@@ -44,7 +44,7 @@ owl_mxf32_4x4* OWL_DLL_EXPORT owl_mxf32_4x4_copy(owl_mxf32_4x4* M, owl_mxf32_4x4
 //M = A + B
 //
 //
-owl_mxf32_4x4* OWL_DLL_EXPORT owl_mxf32_4x4_add(owl_mxf32_4x4* M, owl_mxf32_4x4 const* A, owl_mxf32_4x4 const* B)
+OWL_DLL_EXPORT owl_mxf32_4x4* owl_mxf32_4x4_add(owl_mxf32_4x4* M, owl_mxf32_4x4 const* A, owl_mxf32_4x4 const* B)
 {
     for(int j = 0 ; j < 4 ; j++)
     {
@@ -61,7 +61,7 @@ owl_mxf32_4x4* OWL_DLL_EXPORT owl_mxf32_4x4_add(owl_mxf32_4x4* M, owl_mxf32_4x4 
 //M = A - B
 //
 //
-owl_mxf32_4x4* OWL_DLL_EXPORT owl_mxf32_4x4_sub(owl_mxf32_4x4* M, owl_mxf32_4x4 const* A, owl_mxf32_4x4 const* B)
+OWL_DLL_EXPORT owl_mxf32_4x4* owl_mxf32_4x4_sub(owl_mxf32_4x4* M, owl_mxf32_4x4 const* A, owl_mxf32_4x4 const* B)
 {
     for(int j = 0 ; j < 4 ; j++)
     {
@@ -78,7 +78,7 @@ owl_mxf32_4x4* OWL_DLL_EXPORT owl_mxf32_4x4_sub(owl_mxf32_4x4* M, owl_mxf32_4x4 
 //M = a * A
 //
 //
-owl_mxf32_4x4* OWL_DLL_EXPORT owl_mxf32_4x4_scalar_mul(owl_mxf32_4x4* M, owl_mxf32_4x4 const* A, float a)
+OWL_DLL_EXPORT owl_mxf32_4x4* owl_mxf32_4x4_scalar_mul(owl_mxf32_4x4* M, owl_mxf32_4x4 const* A, float a)
 {
     __m128 broadcast = _mm_set1_ps(a);
 
@@ -97,7 +97,7 @@ owl_mxf32_4x4* OWL_DLL_EXPORT owl_mxf32_4x4_scalar_mul(owl_mxf32_4x4* M, owl_mxf
 //M = A + a * B
 //
 //
-owl_mxf32_4x4* OWL_DLL_EXPORT owl_mxf32_4x4_add_scalar_mul(owl_mxf32_4x4* M, owl_mxf32_4x4 const* A, owl_mxf32_4x4 const* B, float a)
+OWL_DLL_EXPORT owl_mxf32_4x4* owl_mxf32_4x4_add_scalar_mul(owl_mxf32_4x4* M, owl_mxf32_4x4 const* A, owl_mxf32_4x4 const* B, float a)
 {
     __m128 broadcast = _mm_set1_ps(a);
 
@@ -119,7 +119,7 @@ owl_mxf32_4x4* OWL_DLL_EXPORT owl_mxf32_4x4_add_scalar_mul(owl_mxf32_4x4* M, owl
 //M = tA
 //
 //
-owl_mxf32_4x4* OWL_DLL_EXPORT owl_mxf32_4x4_transp(owl_mxf32_4x4* M, owl_mxf32_4x4 const* A)
+OWL_DLL_EXPORT owl_mxf32_4x4* owl_mxf32_4x4_transp(owl_mxf32_4x4* M, owl_mxf32_4x4 const* A)
 {
     for(int j = 0 ; j < 4 ; j++)
     {
@@ -142,7 +142,7 @@ owl_mxf32_4x4* OWL_DLL_EXPORT owl_mxf32_4x4_transp(owl_mxf32_4x4* M, owl_mxf32_4
 //M = A * B
 //
 //
-owl_mxf32_4x4* OWL_DLL_EXPORT owl_mxf32_4x4_mul(owl_mxf32_4x4* M, owl_mxf32_4x4 const* A, owl_mxf32_4x4 const* B)
+OWL_DLL_EXPORT owl_mxf32_4x4* owl_mxf32_4x4_mul(owl_mxf32_4x4* M, owl_mxf32_4x4 const* A, owl_mxf32_4x4 const* B)
 {
     owl_mxf32_4x4 T;
     owl_mxf32_4x4* P = (M == A) ? &T : M;
@@ -180,7 +180,7 @@ owl_mxf32_4x4* OWL_DLL_EXPORT owl_mxf32_4x4_mul(owl_mxf32_4x4* M, owl_mxf32_4x4 
 //norm2(A)
 //
 //
-float OWL_DLL_EXPORT owl_mxf32_4x4_norm2(owl_mxf32_4x4 const* A)
+OWL_DLL_EXPORT float owl_mxf32_4x4_norm2(owl_mxf32_4x4 const* A)
 {
     __m128 buffer = _mm_setzero_ps();
 
@@ -201,7 +201,7 @@ float OWL_DLL_EXPORT owl_mxf32_4x4_norm2(owl_mxf32_4x4 const* A)
 //norminf(A)
 //
 //
-float OWL_DLL_EXPORT owl_mxf32_4x4_norminf(owl_mxf32_4x4 const* A)
+OWL_DLL_EXPORT float owl_mxf32_4x4_norminf(owl_mxf32_4x4 const* A)
 {
     __m128 buffer = _mm_setzero_ps();
 
@@ -220,7 +220,7 @@ float OWL_DLL_EXPORT owl_mxf32_4x4_norminf(owl_mxf32_4x4 const* A)
 //Tr(A)
 //
 //
-float OWL_DLL_EXPORT owl_mxf32_4x4_trace(owl_mxf32_4x4 const* A)
+OWL_DLL_EXPORT float owl_mxf32_4x4_trace(owl_mxf32_4x4 const* A)
 {
     float trace = 0.0;
     for(int j = 0 ; j < 4 ; j++)

@@ -6,7 +6,7 @@
 //
 //
 //
-owl_mxf32_3x3* owl_mxf32_3x3_diag(owl_mxf32_3x3* M, float diag_val)
+OWL_DLL_EXPORT owl_mxf32_3x3* owl_mxf32_3x3_diag(owl_mxf32_3x3* M, float diag_val)
 {
     owl_v3f32_base_xyz(M->column, diag_val);
 
@@ -16,7 +16,7 @@ owl_mxf32_3x3* owl_mxf32_3x3_diag(owl_mxf32_3x3* M, float diag_val)
 //
 //
 //
-owl_mxf32_3x3* owl_mxf32_3x3_setdiag(owl_mxf32_3x3* M, float f0, float f1, float f2)
+OWL_DLL_EXPORT owl_mxf32_3x3* owl_mxf32_3x3_setdiag(owl_mxf32_3x3* M, float f0, float f1, float f2)
 {
     owl_v3f32_setbase_xyz(M->column, f0, f1, f2);
 
@@ -26,7 +26,7 @@ owl_mxf32_3x3* owl_mxf32_3x3_setdiag(owl_mxf32_3x3* M, float f0, float f1, float
 //
 //
 //
-float owl_mxf32_3x3_get_element(owl_mxf32_3x3* M, unsigned int i, unsigned int j)
+OWL_DLL_EXPORT float owl_mxf32_3x3_get_element(owl_mxf32_3x3* M, unsigned int i, unsigned int j)
 {
     unsigned int i_ = i % 3;
     unsigned int j_ = j % 3;
@@ -39,7 +39,7 @@ float owl_mxf32_3x3_get_element(owl_mxf32_3x3* M, unsigned int i, unsigned int j
 //
 //
 //
-owl_mxf32_3x3* owl_mxf32_3x3_set_element(owl_mxf32_3x3* M, float value, unsigned int i, unsigned int j)
+OWL_DLL_EXPORT owl_mxf32_3x3* owl_mxf32_3x3_set_element(owl_mxf32_3x3* M, float value, unsigned int i, unsigned int j)
 {
     unsigned int i_ = i % 3;
     unsigned int j_ = j % 3;
@@ -55,7 +55,7 @@ owl_mxf32_3x3* owl_mxf32_3x3_set_element(owl_mxf32_3x3* M, float value, unsigned
 //M = A + B
 //
 //
-owl_mxf32_3x3* owl_mxf32_3x3_add(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A, owl_mxf32_3x3 const* B)
+OWL_DLL_EXPORT owl_mxf32_3x3* owl_mxf32_3x3_add(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A, owl_mxf32_3x3 const* B)
 {
     for(int j = 0 ; j < 3 ; j++)
     {
@@ -68,7 +68,7 @@ owl_mxf32_3x3* owl_mxf32_3x3_add(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A, owl_m
 //M = A - B
 //
 //
-owl_mxf32_3x3* owl_mxf32_3x3_sub(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A, owl_mxf32_3x3 const* B)
+OWL_DLL_EXPORT owl_mxf32_3x3* owl_mxf32_3x3_sub(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A, owl_mxf32_3x3 const* B)
 {
     for(int j = 0 ; j < 3 ; j++)
     {
@@ -81,7 +81,7 @@ owl_mxf32_3x3* owl_mxf32_3x3_sub(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A, owl_m
 //
 //
 //
-owl_mxf32_3x3* owl_mxf32_3x3_scalar_mul(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A, float a)
+OWL_DLL_EXPORT owl_mxf32_3x3* owl_mxf32_3x3_scalar_mul(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A, float a)
 {
     for(int j = 0 ; j < 3 ; j++)
     {
@@ -94,7 +94,7 @@ owl_mxf32_3x3* owl_mxf32_3x3_scalar_mul(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A
 //M = tA
 //
 //
-owl_mxf32_3x3* owl_mxf32_3x3_transp(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A)
+OWL_DLL_EXPORT owl_mxf32_3x3* owl_mxf32_3x3_transp(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A)
 {
     float const* base_index = (float const*) &(A->column);
     __m128i ind = _mm_set_epi32(3, 8, 4, 0);
@@ -112,7 +112,7 @@ owl_mxf32_3x3* owl_mxf32_3x3_transp(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A)
 //A * v
 //
 //
-owl_v3f32 OWL_VECTORCALL owl_mxf32_3x3_transform_v3f32(owl_mxf32_3x3 const* A, owl_v3f32 v)
+OWL_DLL_EXPORT owl_v3f32 OWL_VECTORCALL owl_mxf32_3x3_transform_v3f32(owl_mxf32_3x3 const* A, owl_v3f32 v)
 {
     owl_v3f32 vr = owl_v3f32_zero();
 
@@ -129,10 +129,18 @@ owl_v3f32 OWL_VECTORCALL owl_mxf32_3x3_transform_v3f32(owl_mxf32_3x3 const* A, o
     return vr;
 }
 
+//A*v
+//
+//
+OWL_DLL_EXPORT owl_v3f32 owl_mxf32_3x3_extern_transform_v3f32(owl_mxf32_3x3 const* A, owl_v3f32 v)
+{
+    return owl_mxf32_3x3_transform_v3f32(A, v);
+}
+
 //M = A * B
 //
 //
-owl_mxf32_3x3* owl_mxf32_3x3_mul(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A, owl_mxf32_3x3 const* B)
+OWL_DLL_EXPORT owl_mxf32_3x3* owl_mxf32_3x3_mul(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A, owl_mxf32_3x3 const* B)
 {
     owl_mxf32_3x3 S;
 
@@ -149,7 +157,7 @@ owl_mxf32_3x3* owl_mxf32_3x3_mul(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A, owl_m
 //norm2(A)
 //
 //
-float owl_mxf32_3x3_norm2(owl_mxf32_3x3 const* A)
+OWL_DLL_EXPORT float owl_mxf32_3x3_norm2(owl_mxf32_3x3 const* A)
 {
     owl_v3f32 buffer = owl_v3f32_zero();
     for(int j = 0 ; j < 3 ; j++)
@@ -166,7 +174,7 @@ float owl_mxf32_3x3_norm2(owl_mxf32_3x3 const* A)
 //norminf(A)
 //
 //
-float owl_mxf32_3x3_norminf(owl_mxf32_3x3 const* A)
+OWL_DLL_EXPORT float owl_mxf32_3x3_norminf(owl_mxf32_3x3 const* A)
 {
     float norminf = 0.0;
 
@@ -181,7 +189,7 @@ float owl_mxf32_3x3_norminf(owl_mxf32_3x3 const* A)
 //M = A ^(-1)
 //
 //
-owl_mxf32_3x3* owl_mxf32_3x3_Inv(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A)
+OWL_DLL_EXPORT owl_mxf32_3x3* owl_mxf32_3x3_Inv(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A)
 {
     float inv_det = 1.0f / owl_mxf32_3x3_det(A);
     owl_mxf32_3x3 inv_det_comA;
@@ -198,7 +206,7 @@ owl_mxf32_3x3* owl_mxf32_3x3_Inv(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A)
 //Return dominant eigenvalue
 //
 //
-float owl_mxf32_3x3_sym_dominant_eigenvalue(owl_v3f32* eigenvector_ptr, owl_mxf32_3x3 const* A)
+OWL_DLL_EXPORT float owl_mxf32_3x3_sym_dominant_eigenvalue(owl_v3f32* eigenvector_ptr, owl_mxf32_3x3 const* A)
 {
     float const delta = 1.0f / ((float)(1<<24));
     float const eps = delta / (2.0f * (float)OWL_SQRT3);
@@ -277,7 +285,7 @@ float owl_mxf32_3x3_sym_dominant_eigenvalue(owl_v3f32* eigenvector_ptr, owl_mxf3
 //A = P * D * tP
 //
 //
-float* owl_mxf32_3x3_sym_diagonalize(float* eigenvalue_list, owl_mxf32_3x3* P, owl_mxf32_3x3 const* A)
+OWL_DLL_EXPORT float* owl_mxf32_3x3_sym_diagonalize(float* eigenvalue_list, owl_mxf32_3x3* P, owl_mxf32_3x3 const* A)
 {
     //Computes an eigenvector associated with the dominant eigenvalue
     owl_v3f32 V0;

@@ -7,7 +7,7 @@
 //
 //
 //
-float OWL_DLL_EXPORT owl_mxf32_2x2_get_element(owl_mxf32_2x2* M, unsigned int i, unsigned int j)
+OWL_DLL_EXPORT float owl_mxf32_2x2_get_element(owl_mxf32_2x2* M, unsigned int i, unsigned int j)
 {
     unsigned int i_ = i % 2;
     unsigned int j_ = j % 2;
@@ -19,7 +19,7 @@ float OWL_DLL_EXPORT owl_mxf32_2x2_get_element(owl_mxf32_2x2* M, unsigned int i,
 //
 //
 //
-owl_mxf32_2x2* OWL_DLL_EXPORT owl_mxf32_2x2_set_element(owl_mxf32_2x2* M, float value, unsigned int i, unsigned int j)
+OWL_DLL_EXPORT owl_mxf32_2x2* owl_mxf32_2x2_set_element(owl_mxf32_2x2* M, float value, unsigned int i, unsigned int j)
 {
     unsigned int i_ = i % 2;
     unsigned int j_ = j % 2;
@@ -34,7 +34,7 @@ owl_mxf32_2x2* OWL_DLL_EXPORT owl_mxf32_2x2_set_element(owl_mxf32_2x2* M, float 
 //M = A ^(-1)
 //
 //
-owl_mxf32_2x2* OWL_DLL_EXPORT owl_mxf32_2x2_Inv(owl_mxf32_2x2* M, owl_mxf32_2x2 const* A)
+OWL_DLL_EXPORT owl_mxf32_2x2* owl_mxf32_2x2_Inv(owl_mxf32_2x2* M, owl_mxf32_2x2 const* A)
 {
     __m128 broadcast_inv_det = _mm_set1_ps( 1.0f / owl_mxf32_2x2_det(A) );
 
@@ -51,7 +51,7 @@ owl_mxf32_2x2* OWL_DLL_EXPORT owl_mxf32_2x2_Inv(owl_mxf32_2x2* M, owl_mxf32_2x2 
 //A = P * D * tP with A symmetric and D=diag(eigenvalue_list)
 //Parameter P is optional
 //Return eigenvalue_list
-float* OWL_DLL_EXPORT owl_mxf32_2x2_diagonalize_sym(float* eigenvalue_list, owl_mxf32_2x2* P, owl_mxf32_2x2 const* A)
+OWL_DLL_EXPORT float* owl_mxf32_2x2_diagonalize_sym(float* eigenvalue_list, owl_mxf32_2x2* P, owl_mxf32_2x2 const* A)
 {
     //Detection of diagonal matrix
     float const non_diag_term = _mm_cvtss_f32( _mm_insert_ps(*A, *A, 0b01001110) );
