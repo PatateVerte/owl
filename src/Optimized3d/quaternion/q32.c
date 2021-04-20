@@ -45,8 +45,8 @@ owl_q32 OWL_VECTORCALL owl_q32_mul(owl_q32 q1, owl_q32 q2)
 //
 owl_q32 OWL_VECTORCALL owl_q32_from_rotation(owl_v3f32 v, float alpha)
 {
-    float cos, sin;
-    sincosf(0.5f * alpha, &sin, &cos);
+    float cos = cosf(0.5f * alpha);
+    float sin = sinf(0.5f * alpha);
 
     owl_v3f32 Im = owl_v3f32_scalar_mul(v, sin);
     Im = _mm_shuffle_ps(Im, Im, 0b10010011);
