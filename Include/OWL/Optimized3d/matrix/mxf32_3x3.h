@@ -31,36 +31,36 @@ static inline owl_mxf32_3x3* owl_mxf32_3x3_zero(owl_mxf32_3x3* M)
 }
 
 //
-OWL_DLL_IMPORT owl_mxf32_3x3* owl_mxf32_3x3_diag(owl_mxf32_3x3* M, float diag_val);
+OWL_DLL_EXPORT owl_mxf32_3x3* owl_mxf32_3x3_diag(owl_mxf32_3x3* M, float diag_val);
 
 //
-OWL_DLL_IMPORT owl_mxf32_3x3* owl_mxf32_3x3_setdiag(owl_mxf32_3x3* M, float f0, float f1, float f2);
+OWL_DLL_EXPORT owl_mxf32_3x3* owl_mxf32_3x3_setdiag(owl_mxf32_3x3* M, float f0, float f1, float f2);
 
 //
-OWL_DLL_IMPORT float owl_mxf32_3x3_get_element(owl_mxf32_3x3* M, unsigned int i, unsigned int j);
+OWL_DLL_EXPORT float owl_mxf32_3x3_get_element(owl_mxf32_3x3* M, unsigned int i, unsigned int j);
 
 //
-OWL_DLL_IMPORT owl_mxf32_3x3* owl_mxf32_3x3_set_element(owl_mxf32_3x3* M, float value, unsigned int i, unsigned int j);
+OWL_DLL_EXPORT owl_mxf32_3x3* owl_mxf32_3x3_set_element(owl_mxf32_3x3* M, float value, unsigned int i, unsigned int j);
 
 //M = A + B
-OWL_DLL_IMPORT owl_mxf32_3x3* owl_mxf32_3x3_add(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A, owl_mxf32_3x3 const* B);
+OWL_DLL_EXPORT owl_mxf32_3x3* owl_mxf32_3x3_add(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A, owl_mxf32_3x3 const* B);
 
 //M = A - B
-OWL_DLL_IMPORT owl_mxf32_3x3* owl_mxf32_3x3_sub(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A, owl_mxf32_3x3 const* B);
+OWL_DLL_EXPORT owl_mxf32_3x3* owl_mxf32_3x3_sub(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A, owl_mxf32_3x3 const* B);
 
 //M = a * A
-OWL_DLL_IMPORT owl_mxf32_3x3* owl_mxf32_3x3_scalar_mul(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A, float a);
+OWL_DLL_EXPORT owl_mxf32_3x3* owl_mxf32_3x3_scalar_mul(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A, float a);
 
 //M = tA
-OWL_DLL_IMPORT owl_mxf32_3x3* owl_mxf32_3x3_transp(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A);
+OWL_DLL_EXPORT owl_mxf32_3x3* owl_mxf32_3x3_transp(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A);
 
 //Transform vector with A
-OWL_DLL_IMPORT owl_v3f32 OWL_VECTORCALL owl_mxf32_3x3_transform_v3f32(owl_mxf32_3x3 const* A, owl_v3f32 v);
-OWL_DLL_IMPORT owl_v3f32 owl_mxf32_3x3_extern_transform_v3f32(owl_mxf32_3x3 const* A, owl_v3f32 v);
+OWL_DLL_EXPORT owl_v3f32 OWL_VECTORCALL owl_mxf32_3x3_transform_v3f32(owl_mxf32_3x3 const* A, owl_v3f32 v);
+OWL_DLL_EXPORT owl_v3f32 owl_mxf32_3x3_extern_transform_v3f32(owl_mxf32_3x3 const* A, owl_v3f32 v);
 
 
 //M = A * B
-OWL_DLL_IMPORT owl_mxf32_3x3* owl_mxf32_3x3_mul(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A, owl_mxf32_3x3 const* B);
+OWL_DLL_EXPORT owl_mxf32_3x3* owl_mxf32_3x3_mul(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A, owl_mxf32_3x3 const* B);
 
 //M = A
 static inline owl_mxf32_3x3* owl_mxf32_3x3_copy(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A)
@@ -73,10 +73,10 @@ static inline owl_mxf32_3x3* owl_mxf32_3x3_copy(owl_mxf32_3x3* M, owl_mxf32_3x3 
 }
 
 //norm2(A)
-OWL_DLL_IMPORT float owl_mxf32_3x3_norm2(owl_mxf32_3x3 const* A);
+OWL_DLL_EXPORT float owl_mxf32_3x3_norm2(owl_mxf32_3x3 const* A);
 
 //norminf(A)
-OWL_DLL_IMPORT float owl_mxf32_3x3_norminf(owl_mxf32_3x3 const* A);
+OWL_DLL_EXPORT float owl_mxf32_3x3_norminf(owl_mxf32_3x3 const* A);
 
 //Tr(A)
 static inline float owl_mxf32_3x3_trace(owl_mxf32_3x3 const* A)
@@ -93,15 +93,15 @@ static inline float owl_mxf32_3x3_det(owl_mxf32_3x3 const* A)
 }
 
 //M = A ^(-1)
-OWL_DLL_IMPORT owl_mxf32_3x3* owl_mxf32_3x3_Inv(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A);
+OWL_DLL_EXPORT owl_mxf32_3x3* owl_mxf32_3x3_Inv(owl_mxf32_3x3* M, owl_mxf32_3x3 const* A);
 
 //Return dominant eigenvalue
-OWL_DLL_IMPORT float owl_mxf32_3x3_sym_dominant_eigenvalue(owl_v3f32* eigenvector_ptr, owl_mxf32_3x3 const* A);
+OWL_DLL_EXPORT float owl_mxf32_3x3_sym_dominant_eigenvalue(owl_v3f32* eigenvector_ptr, owl_mxf32_3x3 const* A);
 
 //A = P * D * tP with A symmetric and D=diag(eigenvalue_list)
 //Parameter P is optional
 //P is an orthogonal direct base of R^3
 //Return eigenvalue_list
-OWL_DLL_IMPORT float* owl_mxf32_3x3_sym_diagonalize(float* eigenvalue_list, owl_mxf32_3x3* P, owl_mxf32_3x3 const* A);
+OWL_DLL_EXPORT float* owl_mxf32_3x3_sym_diagonalize(float* eigenvalue_list, owl_mxf32_3x3* P, owl_mxf32_3x3 const* A);
 
 #endif // OWL_MXF32_3X3_H_INCLUDED
