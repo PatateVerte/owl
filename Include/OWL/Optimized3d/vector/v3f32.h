@@ -4,6 +4,7 @@
 #include <OWL/owl.h>
 
 #include <math.h>
+#include <malloc.h>
 
 //SSE / 128-bits AVX
 #include <xmmintrin.h>
@@ -32,6 +33,17 @@ static inline owl_v3f32 owl_v3f32_zero()
 static inline owl_v3f32 owl_v3f32_set(float x, float y, float z)
 {
     return _mm_set_ps(0.0, z, y, x);
+}
+
+//Allocate an owl_v3f32-aligned array with 4*len float
+static inline float* owl_v3f32_array_alloc(size_t len)
+{
+    return _aligned_malloc(len * sizeof(owl_v3f32), 16);
+}
+
+static inline void owl_v3f32_array_free(float* ptr)
+{
+    _aligned_free(ptr);
 }
 
 //Vector from a float[4]
