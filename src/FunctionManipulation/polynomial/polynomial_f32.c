@@ -7,7 +7,7 @@
 //Create a polynomial
 //
 //
-owl_Polynomial_f32* owl_Polynomial_f32_Create(unsigned int nb_coeff, owl_error* ret_error, owl_error const* pass_through_error)
+OWL_DLL_EXPORT owl_Polynomial_f32* owl_Polynomial_f32_Create(unsigned int nb_coeff, owl_error* ret_error, owl_error const* pass_through_error)
 {
     owl_error error = OWL_SUCCESS;
     owl_Polynomial_f32* P = NULL;
@@ -45,7 +45,7 @@ owl_Polynomial_f32* owl_Polynomial_f32_Create(unsigned int nb_coeff, owl_error* 
 //Destroy a polynomial
 //
 //
-void owl_Polynomial_f32_Destroy(owl_Polynomial_f32* P)
+OWL_DLL_EXPORT void owl_Polynomial_f32_Destroy(owl_Polynomial_f32* P)
 {
     if(P != NULL)
     {
@@ -57,7 +57,7 @@ void owl_Polynomial_f32_Destroy(owl_Polynomial_f32* P)
 //Copy
 //
 //
-owl_Polynomial_f32* owl_Polynomial_f32_Copy(owl_Polynomial_f32* P, owl_Polynomial_f32 const* P1, owl_error* ret_error, owl_error const* pass_through_error)
+OWL_DLL_EXPORT owl_Polynomial_f32* owl_Polynomial_f32_Copy(owl_Polynomial_f32* P, owl_Polynomial_f32 const* P1, owl_error* ret_error, owl_error const* pass_through_error)
 {
     owl_error error = OWL_SUCCESS;
 
@@ -81,7 +81,7 @@ owl_Polynomial_f32* owl_Polynomial_f32_Copy(owl_Polynomial_f32* P, owl_Polynomia
 //P = 0
 //
 //
-owl_Polynomial_f32* owl_Polynomial_f32_ZeroCoeff(owl_Polynomial_f32* P, owl_error* ret_error, owl_error const* pass_through_error)
+OWL_DLL_EXPORT owl_Polynomial_f32* owl_Polynomial_f32_ZeroCoeff(owl_Polynomial_f32* P, owl_error* ret_error, owl_error const* pass_through_error)
 {
     owl_error error = OWL_SUCCESS;
 
@@ -104,7 +104,7 @@ owl_Polynomial_f32* owl_Polynomial_f32_ZeroCoeff(owl_Polynomial_f32* P, owl_erro
 //Adjust number of coefficients
 //
 //
-owl_Polynomial_f32* owl_Polynomial_f32_AdjustNbCoeff(owl_Polynomial_f32* P, unsigned int new_nb_coeff, owl_error* ret_error, owl_error const* pass_through_error)
+OWL_DLL_EXPORT owl_Polynomial_f32* owl_Polynomial_f32_AdjustNbCoeff(owl_Polynomial_f32* P, unsigned int new_nb_coeff, owl_error* ret_error, owl_error const* pass_through_error)
 {
     owl_error error = OWL_SUCCESS;
 
@@ -144,7 +144,7 @@ owl_Polynomial_f32* owl_Polynomial_f32_AdjustNbCoeff(owl_Polynomial_f32* P, unsi
 //Cuts null high degree coefficients
 //
 //
-owl_Polynomial_f32* owl_Polynomial_f32_Cut(owl_Polynomial_f32* P, owl_error* ret_error, owl_error const* pass_through_error)
+OWL_DLL_EXPORT owl_Polynomial_f32* owl_Polynomial_f32_Cut(owl_Polynomial_f32* P, owl_error* ret_error, owl_error const* pass_through_error)
 {
     owl_error error = OWL_SUCCESS;
 
@@ -165,14 +165,14 @@ owl_Polynomial_f32* owl_Polynomial_f32_Cut(owl_Polynomial_f32* P, owl_error* ret
 //deg(P1)
 //deg(0) = -1
 //
-int owl_Polynomial_f32_Deg(owl_Polynomial_f32 const* P1, owl_error* ret_error, owl_error const* pass_through_error)
+OWL_DLL_EXPORT int owl_Polynomial_f32_Deg(owl_Polynomial_f32 const* P1, owl_error* ret_error, owl_error const* pass_through_error)
 {
     owl_error error = OWL_SUCCESS;
     int deg = (int)P1->nb_coeff - 1;
 
     OWL_PASS_THROUGH_ERROR_VERIFICATION(error, pass_through_error)
     {
-        while(deg >= 0 && P1->coeff[deg] == 0.0)
+        while(deg >= 0 && P1->coeff[deg] == 0.0f)
         {
             deg--;
         }
@@ -187,7 +187,7 @@ int owl_Polynomial_f32_Deg(owl_Polynomial_f32 const* P1, owl_error* ret_error, o
 }
 
 //P(x)
-float owl_Polynomial_f32_Evaluate(owl_Polynomial_f32 const* P1, float x, owl_error* ret_error, owl_error const* pass_through_error)
+OWL_DLL_EXPORT float owl_Polynomial_f32_Evaluate(owl_Polynomial_f32 const* P1, float x, owl_error* ret_error, owl_error const* pass_through_error)
 {
     owl_error error = OWL_SUCCESS;
     float P_x = 0.0;
@@ -209,13 +209,13 @@ float owl_Polynomial_f32_Evaluate(owl_Polynomial_f32 const* P1, float x, owl_err
 }
 
 //P = a * P1
-owl_Polynomial_f32* owl_Polynomial_f32_ScalarMul(owl_Polynomial_f32* P, owl_Polynomial_f32 const* P1, float a, owl_error* ret_error, owl_error const* pass_through_error)
+OWL_DLL_EXPORT owl_Polynomial_f32* owl_Polynomial_f32_ScalarMul(owl_Polynomial_f32* P, owl_Polynomial_f32 const* P1, float a, owl_error* ret_error, owl_error const* pass_through_error)
 {
     owl_error error = OWL_SUCCESS;
 
     OWL_PASS_THROUGH_ERROR_VERIFICATION(error, pass_through_error)
     {
-        if(a == 0.0)
+        if(a == 0.0f)
         {
             owl_Polynomial_f32_AdjustNbCoeff(P, 0, &error, &error);
         }
@@ -243,7 +243,7 @@ owl_Polynomial_f32* owl_Polynomial_f32_ScalarMul(owl_Polynomial_f32* P, owl_Poly
 }
 
 //P = P1 + a * P2
-owl_Polynomial_f32* owl_Polynomial_f32_AddScalarMul(owl_Polynomial_f32* P, owl_Polynomial_f32 const* P1, owl_Polynomial_f32 const* P2, float a, owl_error* ret_error, owl_error const* pass_through_error)
+OWL_DLL_EXPORT owl_Polynomial_f32* owl_Polynomial_f32_AddScalarMul(owl_Polynomial_f32* P, owl_Polynomial_f32 const* P1, owl_Polynomial_f32 const* P2, float a, owl_error* ret_error, owl_error const* pass_through_error)
 {
     owl_error error = OWL_SUCCESS;
 
@@ -274,7 +274,7 @@ owl_Polynomial_f32* owl_Polynomial_f32_AddScalarMul(owl_Polynomial_f32* P, owl_P
 //P = P1 * P2
 //
 //
-owl_Polynomial_f32* owl_Polynomial_f32_Mul(owl_Polynomial_f32* P, owl_Polynomial_f32 const* P1, owl_Polynomial_f32 const* P2, owl_error* ret_error, owl_error const* pass_through_error)
+OWL_DLL_EXPORT owl_Polynomial_f32* owl_Polynomial_f32_Mul(owl_Polynomial_f32* P, owl_Polynomial_f32 const* P1, owl_Polynomial_f32 const* P2, owl_error* ret_error, owl_error const* pass_through_error)
 {
     owl_error error = OWL_SUCCESS;
 

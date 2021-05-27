@@ -6,7 +6,7 @@
 //
 //
 //
-owl_TaylorDevf32* owl_TaylorDevf32_Create(unsigned int max_order, owl_error* ret_error, owl_error const* pass_through_error)
+OWL_DLL_EXPORT owl_TaylorDevf32* owl_TaylorDevf32_Create(unsigned int max_order, owl_error* ret_error, owl_error const* pass_through_error)
 {
     owl_error error = OWL_SUCCESS;
     owl_TaylorDevf32* D = NULL;
@@ -49,7 +49,7 @@ owl_TaylorDevf32* owl_TaylorDevf32_Create(unsigned int max_order, owl_error* ret
 //
 //
 //
-void owl_TaylorDevf32_Destroy(owl_TaylorDevf32* D)
+OWL_DLL_EXPORT void owl_TaylorDevf32_Destroy(owl_TaylorDevf32* D)
 {
     if(D != NULL)
     {
@@ -61,7 +61,7 @@ void owl_TaylorDevf32_Destroy(owl_TaylorDevf32* D)
 //D(x)
 //
 //
-float owl_TaylorDevf32_Evaluate(owl_TaylorDevf32 const* D, float x, owl_error* ret_error, owl_error const* pass_through_error)
+OWL_DLL_EXPORT float owl_TaylorDevf32_Evaluate(owl_TaylorDevf32 const* D, float x, owl_error* ret_error, owl_error const* pass_through_error)
 {
     owl_error error = OWL_SUCCESS;
 
@@ -86,7 +86,7 @@ float owl_TaylorDevf32_Evaluate(owl_TaylorDevf32 const* D, float x, owl_error* r
 //Df = 0
 //
 //
-owl_TaylorDevf32* owl_TaylorDevf32_Zero(owl_TaylorDevf32* Df, float x0, unsigned int order, owl_error* ret_error, owl_error const* pass_through_error)
+OWL_DLL_EXPORT owl_TaylorDevf32* owl_TaylorDevf32_Zero(owl_TaylorDevf32* Df, float x0, unsigned int order, owl_error* ret_error, owl_error const* pass_through_error)
 {
     owl_error error = OWL_SUCCESS;
 
@@ -118,7 +118,7 @@ owl_TaylorDevf32* owl_TaylorDevf32_Zero(owl_TaylorDevf32* Df, float x0, unsigned
 //Df = a * D1
 //
 //
-owl_TaylorDevf32* owl_TaylorDevf32_ScalarMul(owl_TaylorDevf32* Df, owl_TaylorDevf32 const* D1, float a, owl_error* ret_error, owl_error const* pass_through_error)
+OWL_DLL_EXPORT owl_TaylorDevf32* owl_TaylorDevf32_ScalarMul(owl_TaylorDevf32* Df, owl_TaylorDevf32 const* D1, float a, owl_error* ret_error, owl_error const* pass_through_error)
 {
     owl_error error = OWL_SUCCESS;
 
@@ -150,7 +150,7 @@ owl_TaylorDevf32* owl_TaylorDevf32_ScalarMul(owl_TaylorDevf32* Df, owl_TaylorDev
 //Df = D1 + a * D2
 //
 //
-owl_TaylorDevf32* owl_TaylorDevf32_AddScalarMul(owl_TaylorDevf32* Df, owl_TaylorDevf32 const* D1, owl_TaylorDevf32 const* D2, float a, owl_error* ret_error, owl_error const* pass_through_error)
+OWL_DLL_EXPORT owl_TaylorDevf32* owl_TaylorDevf32_AddScalarMul(owl_TaylorDevf32* Df, owl_TaylorDevf32 const* D1, owl_TaylorDevf32 const* D2, float a, owl_error* ret_error, owl_error const* pass_through_error)
 {
     owl_error error = OWL_SUCCESS;
 
@@ -193,7 +193,7 @@ owl_TaylorDevf32* owl_TaylorDevf32_AddScalarMul(owl_TaylorDevf32* Df, owl_Taylor
 //Df = D1 * D2
 //
 //
-owl_TaylorDevf32* owl_TaylorDevf32_Mul(owl_TaylorDevf32* Df, owl_TaylorDevf32 const* D1, owl_TaylorDevf32 const* D2, owl_error* ret_error, owl_error const* pass_through_error)
+OWL_DLL_EXPORT owl_TaylorDevf32* owl_TaylorDevf32_Mul(owl_TaylorDevf32* Df, owl_TaylorDevf32 const* D1, owl_TaylorDevf32 const* D2, owl_error* ret_error, owl_error const* pass_through_error)
 {
     owl_error error = OWL_SUCCESS;
 
@@ -256,7 +256,7 @@ owl_TaylorDevf32* owl_TaylorDevf32_Mul(owl_TaylorDevf32* Df, owl_TaylorDevf32 co
 
         if(D_write != Df)
         {
-            owl_TaylorDevf32_ScalarMul(Df, D_write, 1.0, &error, &error);
+            owl_TaylorDevf32_ScalarMul(Df, D_write, 1.0f, &error, &error);
         }
 
         owl_TaylorDevf32_Destroy(D_buffer);
@@ -273,7 +273,7 @@ owl_TaylorDevf32* owl_TaylorDevf32_Mul(owl_TaylorDevf32* Df, owl_TaylorDevf32 co
 //
 //
 //
-owl_TaylorDevf32* owl_TaylorDevf32_Composition(owl_TaylorDevf32* Df, owl_TaylorDevf32 const* D1, owl_TaylorDevf32 const* D2, owl_error* ret_error, owl_error const* pass_through_error)
+OWL_DLL_EXPORT owl_TaylorDevf32* owl_TaylorDevf32_Composition(owl_TaylorDevf32* Df, owl_TaylorDevf32 const* D1, owl_TaylorDevf32 const* D2, owl_error* ret_error, owl_error const* pass_through_error)
 {
     owl_error error = OWL_SUCCESS;
 
@@ -301,6 +301,7 @@ owl_TaylorDevf32* owl_TaylorDevf32_Composition(owl_TaylorDevf32* Df, owl_TaylorD
             D_write = D_buffer;
         }
 
+        owl_TaylorDevf32* D2_zero = owl_TaylorDevf32_Create(final_order, &error, &error);
         owl_TaylorDevf32* D2_pow = owl_TaylorDevf32_Create(final_order, &error, &error);
 
         if(error == OWL_SUCCESS)
@@ -310,14 +311,16 @@ owl_TaylorDevf32* owl_TaylorDevf32_Composition(owl_TaylorDevf32* Df, owl_TaylorD
                 D_write->order = final_order;
                 D_write->x0 = D2->x0;
 
-                owl_TaylorDevf32_ScalarMul(D2_pow, D2, 0.0, &error, &error);
-                D2_pow->terms[0] = 1.0;
+                owl_TaylorDevf32_ScalarMul(D2_zero, D2, 1.0f, &error, &error);
+                D2_zero->terms[0] = 0.0f;
+                owl_TaylorDevf32_ScalarMul(D2_pow, D2, 0.0f, &error, &error);
+                D2_pow->terms[0] = 1.0f;
 
                 owl_TaylorDevf32_ScalarMul(D_write, D2_pow, D1->terms[0], &error, &error);
 
                 for(unsigned i1 = 1 ; i1 <= final_order && error == OWL_SUCCESS ; i1++)
                 {
-                    owl_TaylorDevf32_Mul(D2_pow, D2_pow, D2, &error, &error);
+                    owl_TaylorDevf32_Mul(D2_pow, D2_pow, D2_zero, &error, &error);
                     owl_TaylorDevf32_AddScalarMul(D_write, D_write, D2_pow, D1->terms[i1], &error, &error);
                 }
             }
@@ -329,9 +332,10 @@ owl_TaylorDevf32* owl_TaylorDevf32_Composition(owl_TaylorDevf32* Df, owl_TaylorD
 
         if(Df != D_write)
         {
-            owl_TaylorDevf32_ScalarMul(Df, D_write, 1.0, &error, &error);
+            owl_TaylorDevf32_ScalarMul(Df, D_write, 1.0f, &error, &error);
         }
         owl_TaylorDevf32_Destroy(D_buffer);
+        owl_TaylorDevf32_Destroy(D2_zero);
         owl_TaylorDevf32_Destroy(D2_pow);
     }
 
