@@ -70,10 +70,22 @@ static inline owl_v8f32 owl_v8f32_sub(owl_v8f32 a, owl_v8f32 b)
     return _mm256_sub_ps(a, b);
 }
 
+//v1 + v2 * v3
+static inline owl_v8f32 owl_v8f32_addmul(owl_v8f32 v1, owl_v8f32 v2, owl_v8f32 v3)
+{
+    return _mm256_fmadd_ps(v2, v3, v1);
+}
+
 //a * v
 static inline owl_v8f32 owl_v8f32_scalar_mul(owl_v8f32 v, float a)
 {
     return _mm256_mul_ps(v, owl_v8f32_broadcast(a));
+}
+
+//v1 + a*v2
+static inline owl_v8f32 owl_v8f32_add_scalar_mul(owl_v8f32 v1, owl_v8f32 v2, float a)
+{
+    return _mm256_fmadd_ps(owl_v8f32_broadcast(a), v2, v1);
 }
 
 //Component by component mul

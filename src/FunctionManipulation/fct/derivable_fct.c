@@ -37,19 +37,19 @@ OWL_DLL_EXPORT float owl_sqrt_deriv(float x)
     return 0.5f / sqrtf(x);
 }
 
-OWL_DLL_EXPORT derivable_fct_f32 owl_id_der =
+OWL_DLL_EXPORT owl_derivable_fct_f32 owl_id_der =
 {
     .evaluate = owl_id_eval,
     .derivative = owl_id_deriv
 };
 
-OWL_DLL_EXPORT derivable_fct_f32 owl_square_der =
+OWL_DLL_EXPORT owl_derivable_fct_f32 owl_square_der =
 {
     .evaluate = owl_square_eval,
     .derivative = owl_square_deriv
 };
 
-OWL_DLL_EXPORT derivable_fct_f32 owl_sqrt_der =
+OWL_DLL_EXPORT owl_derivable_fct_f32 owl_sqrt_der =
 {
     .evaluate = sqrtf,
     .derivative = owl_sqrt_deriv
@@ -84,19 +84,19 @@ OWL_DLL_EXPORT float owl_log_deriv(float x)
     }
 }
 
-OWL_DLL_EXPORT derivable_fct_f32 owl_inv_der =
+OWL_DLL_EXPORT owl_derivable_fct_f32 owl_inv_der =
 {
     .evaluate = owl_inv_eval,
     .derivative = owl_inv_deriv
 };
 
-OWL_DLL_EXPORT derivable_fct_f32 owl_log_der =
+OWL_DLL_EXPORT owl_derivable_fct_f32 owl_log_der =
 {
     .evaluate = logf,
     .derivative = owl_log_deriv
 };
 
-OWL_DLL_EXPORT derivable_fct_f32 owl_exp_der =
+OWL_DLL_EXPORT owl_derivable_fct_f32 owl_exp_der =
 {
     .evaluate = expf,
     .derivative = expf
@@ -119,19 +119,19 @@ OWL_DLL_EXPORT float owl_tan_deriv(float x)
     return 1.0f + t*t;
 }
 
-OWL_DLL_EXPORT derivable_fct_f32 owl_cos_der =
+OWL_DLL_EXPORT owl_derivable_fct_f32 owl_cos_der =
 {
     .evaluate = cosf,
     .derivative = owl_cos_deriv
 };
 
-OWL_DLL_EXPORT derivable_fct_f32 owl_sin_der =
+OWL_DLL_EXPORT owl_derivable_fct_f32 owl_sin_der =
 {
     .evaluate = sinf,
     .derivative = cosf
 };
 
-OWL_DLL_EXPORT derivable_fct_f32 owl_tan_der =
+OWL_DLL_EXPORT owl_derivable_fct_f32 owl_tan_der =
 {
     .evaluate = tanf,
     .derivative = owl_tan_deriv

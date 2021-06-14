@@ -38,7 +38,7 @@ static inline owl_v3f32 owl_v3f32_set(float x, float y, float z)
 //Allocate an owl_v3f32-aligned array with 4*len float
 static inline float* owl_v3f32_array_alloc(size_t len)
 {
-    return _aligned_malloc(len * sizeof(owl_v3f32), 16);
+    return _aligned_malloc(len * 4 * sizeof(float), 16);
 }
 
 static inline void owl_v3f32_array_free(float* ptr)
